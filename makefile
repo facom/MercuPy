@@ -17,6 +17,11 @@ utilbuild:
 	echo "Compiling util programs..."
 	make -s -C util all install
 
+updaterepo:
+	@echo "Commiting..."
+	@git commit -am "Commit"
+	@git push origin master
+
 #################################################################################
 #MERCUPY PIPELINE
 #################################################################################
