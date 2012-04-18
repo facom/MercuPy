@@ -1,0 +1,634 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+MercuPy
+Advanced Python Wrap to Mercury Package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Initial version: August 23, 2011.
+Last changes: December 31, 2011
+
+Presentation
+============
+
+MercuPy is a wrap to the Mercury package (Chambers, 1999) intended to
+provide an improved interface to this advanced and very popular N-body
+integrator.
+
+To see details about Mercury see the package documentation included
+with this distribution (doc/mercury6.pdf).
+
+Some of the funcionalities added to Mercury using this wrap are:
+
+- Higher level format for the initial state of the bodies in the
+  system (the original Mercury package use simple ascii files big.in
+  and small.in)
+
+- Advanced formatting style of the initial state of the bodies in the
+  system including the possibility to use multiple systems of units
+  and different system of references.
+
+- Building and execution python scripts that simplifies the
+  preparation of the input files and post processing tasks
+  (e.g. generation of table of orbital elements and its conversion to
+  tables of state vector)
+
+- Physics routines to compute the properties of the simulated bodies.
+
+- Postprocessing routines including change of reference frame
+  (rotating frame of reference), resampling of the output, automatic
+  plot.
+
+Quickstart
+==========
+
+With MercuPy you build a n-body system with a detailed description
+of the interacting bodies and test particles which is provided in an
+initial state file.  
+
+Several examples of the initial state file are provided in the
+examples directory.
+
+In order to run MercuPy perform the following actions:
+
+0) Compile the third party software (CSPICE):
+
+     % make utilbuild
+
+   To compile an use the package you need to install the following
+   dependencies:
+
+   - g++
+   - python
+   - python-numpy
+   - python-scipy
+   - python-matplotlib
+   - gnuplot
+   
+   In Debian systems all these packages could be installed using the
+   "apt-get" command.
+
+1) Prepare an initial state file (templates available in examples
+   directory) system.state (see section "The initial state file" for
+   further explanation)
+
+2) Build the run directory:
+
+     % make build
+
+   All the input files for Mercury will be generated right from the
+   initial state file. Check the file objects.txt to verify that the
+   properties of the objects are the expected from your description in
+   the initial state file.
+
+3) Run the program:
+
+     % make run
+
+   See file 'info.out' for a summary of the simulation.  Files
+   <OBJECT>.els, <OBJECT>.xyz and <OBJECT>.clo, where <OBJECT> is the
+   name of each object in the system, will be created.
+
+4) Generate plain output files:
+   
+     % make plain
+
+   Plain Ascii files <OBJECT>.els.dat, <OBJECT>.xyz.dat will be
+   created.
+   
+5) (Optional) Refer positions and elements to a given Big object:
+
+     % bin/mercupy-ref2ref <REF.OBJECT> <BODY-AXIS1>-<BODY-AXIS2> Rotating [<BODY-TO-CHANGE1>...]
+
+   Ascii files <BODY-TO-CHANGE1>.els.ref and <BODY-TO-CHANGE2>.xyz.ref
+   will be created.
+   
+   Examples: 
+     % bin/mercupy-ref2ref JUPITER SUN-JUPITER Rotating ASTEROID
+     % bin/mercupy-ref2ref JUPITER JUPITER-INERTIAL Rotating ASTEROID
+
+   Assuming that the name of the objects are SUN, JUPITER and
+   ASTEROID.  INERTIAL indicates that the axis is directed to a fixed
+   point in the space.
+
+6) (Optional) Plot the results:
+
+     % gnuplot
+    
+   Semimajor axis as a function of time:
+
+     > plot '<OBJECT>.els.dat' u 1:2
+
+   3D positions for objects OBJECT1 and OBJECT2:
+
+     > splot '<OBJECT1>.xyz.dat' u 2:3:4 w lp, '<OBJECT2>.xyz.dat' u 2:3:4 w lp
+      
+   Phase space x-vx trajectory of OBJECT1:
+
+     > plot '<OBJECT1>.xyz.dat' u 2:5 w lp
+
+The initial state file
+======================
+
+This is an example of a simple two body system (file content is
+between the "--" bars).  Content is self almost self explanatory and
+well documented internally.  However you will find a detailed
+explanation of each section of the file at the end of this example:
+
+--------------------------------------------------------------------------------
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#DESCRIPTION
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DOCSTRING=\
+"""
+This is a simple two-body system.
+"""
+
+from mercupy import *
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#GLOBAL PROPERTIES OF INTEGRATION
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+EPOCH=0.0
+
+TIME_UNIT="days"
+TIME_START=0.0
+TIME_STOP=365.0
+TIME_STEP=1.0
+TIME_SLICES=2
+
+DT_OUTPUT=1.0
+DT_OUTPUTELEM=1.0
+DT_DATADUMPS=10.0
+
+COORDINATES[CENTRAL]="Cartesian"
+COORDINATES[BIG]="Asteroidal"
+COORDINATES[SMALL]="Asteroidal"
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BODIES=[
+#####################
+#BODY0: STAR
+#####################
+body(
+Type=CENTRAL,
+Name="STAR",
+Mass=1*MSUN,
+ObjectClass=NORMALSTAR,
+Density=0.0,
+Radius=0.0,
+Frame="STAR",
+Units=ORBITAL,
+Ep=EPOCH,
+State="0.0 0.0 0.0 0.0 0.0 0.0",
+Cartesian=np.array([0.0,0.0,0.0,0.0,0.0,0.0]),
+J2=0.0,J4=0.0,J6=0.0,
+CloseEncounter=1.0,
+ShowObject=True,
+),#COMMA MANDATORY
+#####################
+#BODY1: PLANET
+#####################
+body(
+Type=BIG,
+Name="EARTH",
+Mass=1*MEARTH,
+ObjectClass=SOLIDROCKY,
+Density=0.0,
+Radius=0.0,
+Ep=EPOCH,
+Frame="STAR",
+Units=CUSTOM,
+State="1.0 0.0 0.0 0.0 0.0 0.0",
+As="a1=0.0 a2=0.0 a3=0.0",
+Spin="0 0 0",
+CloseEncounter=1.0E-4,
+ShowObject=True,
+),#COMMA MANDATORY
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#END BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+]#THIS LINE IS MANDATORY
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#GENERAL BEHAVIOR OF THE INTEGRATOR
+#Modify only if you know what are you doing
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#STOP INTEGRATION AFTER A CLOSE ENCOUNTER
+STOPINTEG="no"
+#ALLOW COLLISIONS TO OCCUR
+COLLISIONS="no"
+#INCLUDE COLLISIONAL FRAGMENTATION = NO
+FRAGMENTATION="no"
+#ALGORITHM (MVS, BS, BS2, RADAU, HYBRID ETC)
+INTEGRATION_ALGORITHM="hyb"
+#ACCURACY
+INTEGRATION_ACCURACY=1E-12
+#OUTPUT PRECISION = MEDIUM
+INTEGRATION_PRECISION="medium"
+#HYBRID INTEGRATOR CHANGEOVER (HILL RADII) = 3.
+INTEGRATION_CHANGEOVER=3.0
+#REFERENCE FRAME FOR OUTPUT ELEMENTS: CENTRAL, BARYCENTRIC, JACOBI
+OUT_ELEMENTS="Cen"
+#NUMBER OF TIMESTEPS BETWEEN PERIODIC EFFECTS 
+DSTEP_PERIODIC=100
+#EXPRESS TIME RELATIVE TO INTEGRATION START TIME
+TIME_RESPINTEGRATION="yes"
+
+--------------------------------------------------------------------------------
+
+Several important features of the initial state file are:
+
+- The first line where the "mercupy" package is imported, is mandatory.
+  Some commands and routines included in the definition of the bodies
+  comes from this package.  The initial.state file has a python syntax
+  and you can also include other packages if required.
+
+- The first part of the file (GLOBAL PROPERTIES) describes several
+  general properties of the system and the simulation.  All these
+  variables are used during the building process to generate the ".in"
+  and ".inc" files required by mercury.  See section "Mercury
+  configuration variables" for a detailed description of the variables
+  recognized by MercuPy.
+
+- COORDINATES array describes the type of coordinates used to describe
+  the initial state of the three types of objects: CENTRAL (most
+  massive object in the system), BIG (interacting bodies), SMALL (test
+  particles).  
+
+  Available COORDINATES: 
+
+  * Cartesian: x,y,z,vx,vy,vz
+
+  * Asteroidal: a,e,i,n(long.asc.node),g(arg.periapsis),M(mean anomaly)
+
+  * Cometary: q(peric.distance),e,i,g,n,T(time pericentre)
+
+  NOTE: Angles should be given in degrees.
+
+- The next section of the file contains the BODIES initial state
+  description.  This is performed using a list (BODIES) of
+  dictionaries (body). Each dictionary describes one object.  Each
+  object has the following set of attributes:
+
+  * Type: type of body, "CENTRAL", "BIG" or "SMALL". Big bodies are
+    those who are able to affect the orbit of any body in the
+    simulation (including other big bodies and small bodies) and feel
+    the effect of the central body and other big bodies.  Small bodies
+    are those who are affected by central and big bodies but cannot be
+    affected other small bodies.  In the case that a small-body has a
+    zero-mass it will be considered as a test particle (see Mercury
+    documentation).
+
+  * Name: String with the arbitrary name of the object.  Do not use
+    spaces or special characters.  Output files will be named after
+    this attribute.  We recommend use uppercase names.
+
+  * Mass: Mass of the object expressed in kg.  In mercupy.py you will
+    find several known reference astronomical masses
+    (MSUN,MJUP,MEARTH,MMOON) that can be used in this file.
+
+  * ObjectClass: Type of object according to its composition.  This
+    attribute is used to compute a realistic radius from its mass.
+    Available ObjectClasses are (in parenthesis are the an integer ID
+    used internally by MercuPy to identify each type of object):
+
+    Planetesimals:
+
+    - ROCKYPLSIMAL(1): Rocky planetesimal.  Use to simulate rocky
+      planetesimals, asteroids, small moons, etc.
+
+    - ICEPLSIMAL(2): Icy planetesimal.  Use to simulate icy
+      planetesimals, comets, etc.
+
+    Stars:	     
+
+    - NORMALSTAR (10): Main sequence star.
+    
+    - WDSTAR (11): White dwarf.
+
+    - NEUTRONSTAR (12): Neutron star.
+
+    Giant planets:
+
+    - GASGIANT (20): Gas giant.  e.g. Jupiter and above.
+
+    - ICEGIANT (21): Ice giant.  e.g. Uranus and neptune.
+
+    Solid planets:
+
+    - SOLIDROCKY (30): Solid rocky planet.  Use to simulate earth-like
+      planets and moons, earth, mars, venus, moon.
+
+    - SOLIDIRON (31): Solid iron planet.  Use to simulate mercury-like
+      planets and moons.
+
+    - SOLIDICE (32): Solid ice planet.  Use to simulate solid planets
+      and moons made mainly of ice or water, e.g. ocean planets, icy
+      moons.
+
+  * Density, Radius: Density and radius of the planet in g/cc and km.
+    These attributes could be provided independently of the
+    ObjectClass attribute.  If you want these to be computed just left
+    in zero.
+
+  * Frame: Name of the body used as reference frame for the initial
+    state of each object.
+
+  * Units: units on which the initial state quantities are provided.
+    Units could be:
+    
+    - ORBITAL: kg,km,s,km/s
+
+    - CUSTOM: UM,UL,UT,UL/UT as defined in mercupy.py.  User can
+      change these units)
+    
+    - MERCURY: MSUN,AU,DAYS,AU/DAYS
+    
+    - BODY: Mass of reference body, Radius of reference body, s, km/s
+
+    - GRAVITATIONAL: Hill radius of reference body, Mass of reference
+      body, s, km/s
+
+  * Ep: Epoch for the initial state (referred to the global EPOCH).
+
+  * State: State vector.  According to COORDINATES, state could be
+    cartesian coordinates, classical elements or cometary elements.
+    
+  * Cartesian (CENTRAL OBJECT): Initial cartesian
+    coordinates.
+
+  * J2,J4,J6 (CENTRAL OBJECT): Value of the moments of the central
+    body in units of radius^n (n=2,4,6).
+
+  * CloseEncounter: Maximum distance from the body as measured in Hill
+    radius respect to the central body, that constitute a close
+    encounter.
+
+  * ShowObject: include object in the list of objects whose elements
+    are computed.
+
+  * As: Non-gravitational force parameters (a1, a2, a3).  These should
+    be zero for Big objects.
+
+  * Spin: Components of the spin angular momentum in units of solar
+    mass AU^2 per day.
+
+- The last part of the state file describes the properties of the
+  integrator.  This is a critical part of the configuration.  Be
+  careful when changing the variables defined in this section:
+
+  * STOPINTEG.  Stop the integration when a close encounter is
+    detected.  If the value is 'yes' the program will stop when the
+    bodies are less than CloseEncounter*Hill Radius
+
+  * COLLISIONS.  Allow collisions to ocurr.  If the value is 'yes' a
+    collision will be detected when a distance condition is fulfilled.
+
+  * FRAGMENTATION.  Not supported in this version of Mercury.
+
+  * INTEGRATION_ALGORITHM.  Available integration algorithms: 
+  
+    + HYB: "Hybrid symplectic/Bulirsch-Stoer integrate, very fast but
+      only moderately accurate. This algorithm can compute close
+      encounters".
+
+    + MVS: "A second-order mixed-variable symplectic (MVS) algorithm
+      incorporating simple symplectic correctors (see J.Wisdom et al.
+      1996, Fields Instit. Commun. vol 10 pp217) - this is very fast
+      but it cannot compute close encounters between objects".
+
+    + BS: "A general Bulirsch-Stoer - slow but accurate in most
+      situations.  You can use this when all else fails, or to test
+      whether the other algorithms are appropriate for the problem you
+      want to study."
+
+    + BS2: "Conservative Bulirsch-Stoer - twice as fast as the general
+      BS routine, but it will only work for conservative systems, in
+      which accelerations are a function of position only
+      (e.g. Newtonian gravity, but not General Relativity)."
+
+    + RADAU: "Everhart’s RA15 (RADAU) - about 2-3 times faster than the
+      general version of Bulirsch-Stoer. Usually reliable, except for
+      very close encounters or very eccentric (e.g. Sun grazing)
+      orbits."
+
+  * INTEGRATION_ACCURACY.  Accuracy of the variable step integrators.
+    Also used during close encounter.  A proper value could be 1E-12.
+
+  * INTEGRATION_PRECISION. Precision could be "low", "medium" or
+    "high".  This determines how many figures will be used to store
+    the orbital elements (4, 9 or 15).
+
+  * INTEGRATION_CHANGEOVER.  Distance in Hill Radius used by the
+    Hybrid integrator to switch between the symplectic and the more
+    precise BS integrator.
+
+  * OUT_ELEMENTS="Cen".  Type of center to compute the output
+    elements.  It could be "Central", "Barycentric" or "Jacobi"
+    elements.
+
+  * DSTEP_PERIODIC.  Number of time steps before periodic effects
+    should be detected.
+
+  * TIME_RESPINTEGRATION.  Express time relative to integration time?
+
+
+Objects description in object.txt
+=================================
+
+When the Mercury input files are generated form the initial state a
+complete description of the system is stored in the objects.txt file.
+It is very important to check that the information of the objects
+generated by the wrapping scripts are as expected by the definition of
+the system.
+
+Each object is described in this file using the following format:
+
+--------------------------------------------------------------------------------
+
+Object 1 (Type,Obj.Class): EARTH (1,30)
+        Mass (UM = 1.989100e+30 kg): 3.006385e-06 UM, 5.980000e+24 kg
+        Radius (UL = 1.495979e+08 km): 4.144110e-05 UL, 6.199500e+03 km
+        Density (URHO = 1.000000e+03 g/cc): 5.991596e+00 URHO, 5.991596e+03 kg/m3
+        Close Encounter (UL = 1.495979e+08 km): 1.000000e-04 RH, 1.000709e-06 UL, 1.497039e+02 km
+        Frame object : STAR
+        Mu : 2.958242e-04
+        Hill Radius (UL = 1.495979e+08 km): 1.000709e-02 UL, 1.497039e+06 km
+        Original coordinates : Asteroidal
+        Cartesian position (UL=1.495979e+08 km,UT=8.640000e+04 s,UV=1.731457e+03 km/s):
+                +1.000000e+00 UL +0.000000e+00 UL +0.000000e+00 UL -0.000000e+00 UV +1.719954e-02 UV +0.000000e+00 UV
+                +1.495979e+08 km +0.000000e+00 km +0.000000e+00 km -0.000000e+00 km/s +2.978026e+01 km/s +0.000000e+00 km/s
+
+--------------------------------------------------------------------------------
+
+- Each quantity is given in two systems of units: the program units
+  UL, UM, UT, UV, URHO (Mercury Units, AU, MSUN, day, AU/day, g/cc)
+  and the orbital units (respectively km, kg, s, km/s and kg/m3)
+
+- The Object type is CENTRAL (0), BIG (1) or SMALL (2).
+
+- The Object class is defined in the previous section using normally a
+  two digits code. 
+
+- For predefined class of objects the radius is computed using
+  analytical fits to realistic physical models of the interior of that
+  class of objects.  You can see in the example that the radius of an
+  1 MEarth planet is computed in 6199 km, i.e. with an uncertainty of
+  about 3%.
+
+- "Close encounter" is a parameter of Mercury to describe the minimum
+  distance at which the integrator could either stop the integration
+  because a colission ocurr or switch from a fast symplectic
+  integrator to a slower but more precise one.
+
+- Mu is the gravitational parameter associated to the central object,
+  i.e. G*Mcentral.
+
+- Hill Radius is computed respect the central object.
+
+- All the objects in the mercury input files are finally described in
+  the Cartesian system of coordinates after the conversion from the
+  reference frame of the "frame object" to the central object.
+
+Package structure
+=================
+
+The components of the package are:
+
+- util: directory with util tools.  Basically cspice and two programs
+  (elem2state and state2elem) to convert between elements and state
+  vectors.  It includes a building makefile.
+
+- bin: this is the core directory.  It contains the following files:
+  
+  * mercupy.py: MercuPy core file.  It contains all the relevant
+    routines required to run the Wrap.  It also contains the relevant
+    physical constants.  Particularly you can define there your own
+    set of units.
+
+  * mercupy.conf: Configuration file for MercuPy.
+
+  * MercuPy scripts:
+
+    + mercupy-build: Build an instance of Mercury starting from an
+      initial state description file.
+
+    + mercupy-plain: Convert the resulting elements files from a
+      Mercury run in plain files (to use in gnuplot for example) and
+      cartesian files.
+
+    + mercupy-ref2ref: Change between reference frames.
+
+  * Util programs: 
+
+    + elem2state: convert elements into state vector provided a
+      gravitational constant mu value and an epoch.
+    
+    + state2elem: convert state vector into elements provided a
+      gravitational constant mu value and an epoch.
+
+- examples: examples of initial state files.
+
+- doc: documentation.
+
+  * mecury6.man, mercury6.pdf: Mercury6 documentation.
+
+  * README.txt: Mercury6 Readme.
+
+  * MANUAL.txt: Manual of MercuPy (this manual).
+
+- tmp: Temporal directory
+
+Guide to programmers
+====================
+
+(Under construction)
+
+MercuPy configuration variables
+===============================
+
+*******************
+Basic (state file):
+*******************
+
+EPOCH: Epoch at which the times are referred.  Units, julian days.
+MercuPy file "system.state".  Mercury files where used "big.in".
+Example: 0.0.
+
+TIME_UNIT: Unit of time (days or years).  Units, string.  MercuPy
+file "system.state".  Mercury files where used "param.in". Example:
+"days".
+
+TIME_START: Time of start of the simulation.  Units, time unit.  MercuPy
+file "system.state".  Mercury files where used "param.in". Example:
+0.0
+
+TIME_STOP: Time to stop simulation.  Duration of the simulation.
+Units, time unit. MercuPy file "system.state".  Mercury files where used
+"param.in". Example: 365.25.
+
+TIME_STEP: Time step for simulation.  Units, time unit. MercuPy file
+"system.state".  Mercury files where used "param.in".  Example: 1.0.
+
+DT_DATADUMPS: Time between data dumps (printout).  Units, time unit.
+MercuPy file "system.state".  Mercury files where used "param.in".
+Example: 100.
+
+DT_OUTPUTELEM: Minimum time between orbital elements output.  Units,
+time unit.  MercuPy file "system.state".  Mercury files where used
+"element.in".  Example: 1.0.
+
+DT_OUTPUT: Time between internal output when running.  Units, time
+unit. MercuPy file "system.state".  Mercury files where used
+"param.in".  Example: 1.0.
+
+******************************
+Internal (configuration file):
+******************************
+
+AU: Astronomical Unit.  Units, km.  MercuPy file
+"mercupy.py". Mercury files where used "mercury.inc".
+
+MSUN: Solar mass.  Units, kg.  MercuPy file "mercupy.py". Mercury
+files where used "mercury.inc".
+
+OUT_ELEMENTS: Type of output elements (central, barycentric, jacobi).
+Units, string.  MercuPy file "mercupy.conf". Mercury files where
+used "element.in".
+
+TIME_RESPINTEGRATION: Express time relative to integration start time
+(yes, no).  Units, string.  MercuPy file "mercupy.conf". Mercury
+files where used "element.in".
+
+FRM_ELEMENTS: Format to print out the orbital elements.  Units,
+string.  MercuPy file "mercupy.conf". Mercury files where used
+"element.in". Example: "a8.5 e8.6 i8.4 g8.4 n8.4 l8.4 m13e"
+
+Other physical constants
+========================
+
+The following are several physical constants included in the master
+mercupy.py file and that can be used in the system.state file:
+
+GCONST=6.67E-20 km/s^2 kg
+MSUN=1.9891E30 kg
+RSUN=6.96e5 km
+REARTH=6.371E3 km
+MEARTH=5.98E24 kg
+MMOON=7.3477E22 kg
+RMOON=1737.1 km
+MJUP=1.8986e27 kg
+RJUP=71492 km
+AU=1.4959787e8 km
+HOURS=3600 secs
+DAYS=24*HOURS secs
+YEARS=365.25*DAYS secs
+GMC3=1E3 kg/m^3
+AUPD=AU/DAYS km/s
+
+References
+==========
+
+J.E.Chambers (1999), A hybrid symplectic integrator that permits close
+encounters between massive bodies. Monthly Notices of the RAS, vol
+304, pp793.

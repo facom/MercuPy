@@ -1,0 +1,108 @@
+#!/usr/bin/env python
+"""
+################################################################################
+MercuPy Wrap
+Jorge Zuluaga (C) 2011
+################################################################################
+"""
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#IMPORT UTILITIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+from mercupy import *
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD SYSTEM CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inifile="system.config"
+state=loadconf(inifile)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOADING CONTINUE CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+confile="continue.config"
+cont=loadconf(confile)
+
+if not cont.CONTINUE:
+    print "Skipping continue..."
+    sys.exit(0)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#CHECKING STATUS OF THE PREVIOUS SIMULATION
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+bcont=dict()
+numdata=dict()
+print "Checking for continue information..."
+for body in state.BODIES:
+    bcode=body["Code"]
+    print "\tChecking body %s..."%bcode
+    datfile=OUTDIR+"/"+bcode+".dat"
+    if not os.path.lexists(datfile):
+        print "\t\tBody file '%s' does not exist"%datfile
+        bcont[bcode]=False
+        continue
+    else:bcont[bcode]=True
+    numdata[bcode]=int(System("cat %s | grep -v '#' | wc -l"%datfile,out=True))
+
+try:maxdata=max(numdata.values())
+except ValueError:
+    print "You cannot continue a simulation not ran yet"
+    sys.exit(1)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#GENERATING INITIAL STATE FOR BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+print "Generating initial information..."
+for body in state.BODIES:
+    bcode=body["Code"]
+    if bcont[bcode]:
+        print "\tGenerating initial state for body %s..."%bcode,
+        datfile=OUTDIR+"/"+bcode+".dat"
+        if numdata[bcode]==maxdata:
+            System("tail -n 1 %s > %s.state"%(datfile,bcode))
+            tini=float(System("tail -n 1 %s.state"%(bcode),out=True).split()[0])
+            print "Done."
+        if numdata[bcode]<maxdata:
+            System("echo COLLISION > %s.state"%(bcode))
+            print "Body has impacted other body."
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#STORING PREVIOUS RESULTS
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#print "Replacing starting time by %e in system configuration file..."%tini
+#System("sed -i -e 's/TIME_START[ ]*=.*/TIME_START=%e/' system.config"%tini)
+print "Removing binary data..."
+#STORE PREVIOUS DATA
+System("mv info.out information.out")
+System("mv xv.out data.out")
+System("mv ce.out close.out")
+#REMOVE TEMPORAL
+System("rm -rf *.tmp *.dmp")
+if not cont.STORE_PREVIOUS:
+    print "Previous data will not be stored..."
+    System("rm -rf output/*")
+else:
+    print "Stoting previously computed data..."
+    phase=System("cat output/phase",out=True)
+    if "cat" in phase:
+        print "No previous stored files found."
+        phase=1
+        endtime=state.TIME_ELAPSED
+    else:
+        phase,endtime=phase.split()
+        phase=int(phase)+1
+        endtime=float(endtime)+state.TIME_ELAPSED
+        print "Phase:",phase
+
+    System("echo %d %f> output/phase"%(phase,endtime))
+
+    files=System("ls output/*",out=True).split()
+    for file in files:
+        if "phase" in file:continue
+        parts=file.split(".")
+        name=".".join(parts[:-1])
+        ext=parts[-1]
+        if "PH" not in ext:
+            ext+=".PH%d"%phase
+            System("cp -rf %s %s.%s"%(file,name,ext))
+
+print "Now you can continue your simulation..."

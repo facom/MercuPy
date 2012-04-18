@@ -1,0 +1,235 @@
+#!/usr/bin/env python
+"""
+################################################################################
+MercuPy Wrap
+Jorge Zuluaga (C) 2011
+################################################################################
+"""
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#IMPORT UTILITIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+from mercupy import *
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD SYSTEM CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inifile="system.config"
+state=loadconf(inifile)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOADING CHANGE OF REFERENCE CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+confile="ref2ref.config"
+refconf=loadconf(confile)
+
+if not refconf.TRANSFORM:
+    print "Skipping reference frame transform..."
+    sys.exit(0)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+obody=refconf.REFERENCE_BODY
+dbody1=refconf.REFERENCE_AXIS[0]
+dbody2=refconf.REFERENCE_AXIS[1]
+typeaxis=refconf.REFERENCE_TYPE
+
+try:
+    selbodies=argv[4]
+    sbodies=selbodies.split(",")
+except:
+    selbodies="ALL"
+    sbodies=[]
+    for body in state.BODIES:
+        if body["Type"] is CENTRAL:continue
+        sbodies+=[body["Code"]]
+
+print "Conversion task:"
+print "\tBodies to convert: ",selbodies
+print "\tBodies to convert: ",sbodies
+print "\tOrigin of coordinates: ",obody
+print "\tReference axis: ",dbody1,"-",dbody2
+print "\tType of reference axis: ",typeaxis
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#INDEXING BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+i=0
+BID=dict()
+for body in state.BODIES:
+    BID[body["Code"]]=i
+    body["Id"]=i
+    i+=1
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD THE DATA FROM REFERENCE BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+print "Loading data from reference frame bodies..."
+try:
+    odata=np.loadtxt("%s/%s.dat"%(OUTDIR,obody))
+except:
+    if obody is "INERTIAL" or state.BODIES[BID[obody]]["Type"] is CENTRAL:
+        ofile=System("(for file in output/*.dat;do wc -l $file;done) | sort -g | tail -n 1 | awk '{print $2}'",out=True)
+        odata=np.loadtxt("%s"%ofile)
+        ndata,ncols=odata.shape
+        for i in range(0,ndata):
+            for j in range(1,ncols):odata[i,j]=0.0
+    else:
+        error("Object data does not exist",1)
+
+ndata=odata.shape[0]
+
+#AXIS
+print "Loading axes data..."
+
+#AXIS ORIGIN
+try:ddata1=np.loadtxt("%s/%s.dat"%(OUTDIR,dbody1))
+except:
+    ddata1=np.zeros_like(odata)
+
+#AXIS EXTREME
+try:ddata2=np.loadtxt("%s/%s.dat"%(OUTDIR,dbody2))
+except:
+    ddata2=np.zeros_like(odata)
+    if "INERTIALX" in dbody2:col=1
+    if "INERTIALY" in dbody2:col=2
+    if "INERTIALZ" in dbody2:col=3
+    for i in range(0,ndata):ddata2[i,col]=1.0E+100
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD THE XYZ DATA FROM COMPUTING OBJECTS
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+i=0
+nbdata=dict()
+nbedata=dict()
+ntimes=int(state.TIME_ELAPSED/state.DT_OUTPUTELEM)
+ntfreq=int(ntimes/10)
+if ntfreq<1:ntfreq=1
+print "Number of times:",ntimes
+print "Frequency of output:",ntfreq
+bshow=[]
+t=0
+for opos in odata:
+    #========================================
+    #POSITION OF THE ORIGIN
+    #========================================
+    it=i
+    i+=1
+    if (i%ntfreq)==0:
+        print "\tTime %e"%t
+    t=odata[it][0]
+    ro=odata[it][1:4]
+    vo=odata[it][4:7]
+    masso=state.BODIES[BID[obody]]["Mass"]
+    muo=GMERC*masso/UMMERC
+    #========================================
+    #AXES ORIENTATION
+    #========================================
+    r1=ddata1[it][1:4]
+    r2=ddata2[it][1:4]
+    R=r2-r1
+    uxr=R/mod(R)
+    #print "uxr = ",uxr
+    uz=np.array([0,0,1])
+    pz=uxr*np.dot(uz,uxr)
+    #print "pz = ",pz
+    uzrn=uz-pz
+    uzr=uzrn/mod(uzrn)
+    #print "uzr = ",uzrn,uzr
+    uyr=np.cross(uzr,uxr)
+    #print "Basis at %e: "%t,uxr,uyr,uzr
+
+    for bname in sbodies:
+        ib=BID[bname]
+        body=state.BODIES[ib]
+        if not body["Activate"]:
+            print "Skipping body %s..."%body["Code"]
+            continue
+        if body["ShowObject"]:
+            if it==0:
+                bshow+=[bname]
+                nbdata[bname]=[]
+                nbedata[bname]=[]
+                print "Translating and rotating %s..."%bname
+
+            fdata=OUTDIR+"/"+bname+".dat"
+            try:bdata=np.loadtxt(fdata)
+            except:
+                bdata=np.zeros_like(odata)
+
+            #========================================
+            #TRASLATION
+            #========================================
+            try:
+                r=bdata[it][1:4]
+                v=bdata[it][4:7]
+                ephys=bdata[it][18:22]
+                #print ephys
+                rp=r-ro
+                vp=v-vo
+            except:
+                print "No more data points for body %s at %e..."%(bname,t)
+                continue
+
+            #========================================
+            #ROTATION
+            #========================================
+            rpp=np.array([np.dot(rp,uxr),np.dot(rp,uyr),np.dot(rp,uzr)])
+            vpp=np.array([np.dot(vp,uxr),np.dot(vp,uyr),np.dot(vp,uzr)])
+            xpp=rpp.tolist()+vpp.tolist()
+
+            #========================================
+            #CONVERT TO ORBITAL ELEMENTS 
+            #========================================
+            xyz="%e %e %e %e %e %e "%tuple(xpp)
+            xyz+="%e %e "%(0.0,muo)
+            elstr=System("bin/state2elem %s"%xyz,out=True).strip(" ")
+            els=[float(e) for e in elstr.split()]
+            #CONVERTING TO SEMIMAJOR AXIS
+            qel=els[0]
+            els[0]=els[0]/(1-els[1])
+            tmp=els[3]
+            els[3]=els[4]
+            els[4]=tmp
+            
+            #========================================
+            #ADDITIONAL ELEMENTS
+            #========================================
+            rmag=mod(rpp)
+            adels=[0]*4
+            adels[0]=qel
+            adels[1]=els[0]*(1+els[1])
+            try:adels[3]=np.acos(els[0]*(1-els[1]**2)/adels[0])
+            except:adels[3]=0.0
+            adels[2]=adels[3]+els[3]
+
+            #========================================
+            #STORE RESULTS
+            #========================================
+            nbdata[bname]+=[[t]+xpp+[rmag]+els[0:6]+adels[0:5]+ephys.tolist()]
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#DATA FILE HEADER
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+helems=\
+    state.POSITION_ELEMENTS.split()+\
+    state.ORBITAL_ELEMENTS.split()+\
+    state.PHYSICAL_ELEMENTS.split()
+NELS=len(helems)
+
+header="%-12s "%("#1:t")
+i=2
+for el in helems:
+    header+="%-12s "%("%d:%s"%(i,el))
+    i+=1
+            
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#SAVE REF FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for bname in bshow:
+    print "Saving positions and elements for body %s..."%bname
+    btmp="tmp/"+bname+".ref.tmp"
+    bels=OUTDIR+"/"+bname+".ref"
+    np.savetxt(btmp,nbdata[bname],fmt=('%-12.5e'))
+    System("(echo '%s';cat %s)>%s"%(header,btmp,bels))
+

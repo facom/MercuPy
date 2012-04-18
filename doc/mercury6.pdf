@@ -1,0 +1,936 @@
+%PDF-1.2
+%‚„œ”
+1 0 obj<</CreationDate(D:20110609041412-05'00')/Producer(txt2pdf v10.2 \251 SANFACE Software 2005)/Title(mercury6.man)>>endobj
+2 0 obj<</Type/Encoding/Differences[0 /.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/space/exclam/quotedbl/numbersign/dollar/percent/ampersand/quoteright/parenleft/parenright/asterisk/plus/comma/hyphen/period/slash/zero/one/two/three/four/five/six/seven/eight/nine/colon/semicolon/less/equal/greater/question/at/A/B/C/D/E/F/G/H/I/J/K/L/M/N/O/P/Q/R/S/T/U/V/W/X/Y/Z/bracketleft/backslash/bracketright/asciicircum/underscore/quoteleft/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y/z/braceleft/bar/braceright/asciitilde/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/dotlessi/grave/acute/circumflex/tilde/macron/breve/dotaccent/dieresis/.notdef/ring/cedilla/.notdef/hungarumlaut/ogonek/caron/space/exclamdown/cent/sterling/currency/yen/brokenbar/section/dieresis/copyright/ordfeminine/guillemotleft/logicalnot/hyphen/registered/macron/degree/plusminus/twosuperior/threesuperior/acute/mu/paragraph/periodcentered/cedilla/onesuperior/ordmasculine/guillemotright/onequarter/onehalf/threequarters/questiondown/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE/Ccedilla/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex/Idieresis/Eth/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis/multiply/Oslash/Ugrave/Uacute/Ucircumflex/Udieresis/Yacute/Thorn/germandbls/agrave/aacute/acircumflex/atilde/adieresis/aring/ae/ccedilla/egrave/eacute/ecircumflex/edieresis/igrave/iacute/icircumflex/idieresis/eth/ntilde/ograve/oacute/ocircumflex/otilde/odieresis/divide/oslash/ugrave/uacute/ucircumflex/udieresis/yacute/thorn/ydieresis]>>endobj
+3 0 obj<</Type/Font/Subtype/Type1/Name/F1/Encoding 2 0 R/BaseFont/Courier>>endobj
+4 0 obj<</Type/Font/Subtype/Type1/Name/F2/Encoding 2 0 R/BaseFont/Courier-Oblique>>endobj
+5 0 obj<</Type/Font/Subtype/Type1/Name/F3/Encoding 2 0 R/BaseFont/Courier-Bold>>endobj
+6 0 obj<</Type/Font/Subtype/Type1/Name/F4/Encoding 2 0 R/BaseFont/Courier-BoldOblique>>endobj
+7 0 obj<</Type/Font/Subtype/Type1/Name/F5/Encoding 2 0 R/BaseFont/Helvetica>>endobj
+8 0 obj<</Type/Font/Subtype/Type1/Name/F6/Encoding 2 0 R/BaseFont/Helvetica-Oblique>>endobj
+9 0 obj<</Type/Font/Subtype/Type1/Name/F7/Encoding 2 0 R/BaseFont/Helvetica-Bold>>endobj
+10 0 obj<</Type/Font/Subtype/Type1/Name/F8/Encoding 2 0 R/BaseFont/Helvetica-BoldOblique>>endobj
+11 0 obj<</Type/Font/Subtype/Type1/Name/F9/Encoding 2 0 R/BaseFont/Times-Roman>>endobj
+12 0 obj<</Type/Font/Subtype/Type1/Name/F10/Encoding 2 0 R/BaseFont/Times-Italic>>endobj
+13 0 obj<</Type/Font/Subtype/Type1/Name/F11/Encoding 2 0 R/BaseFont/Times-Bold>>endobj
+14 0 obj<</Type/Font/Subtype/Type1/Name/F12/Encoding 2 0 R/BaseFont/Times-BoldItalic>>endobj
+15 0 obj<</Type/Font/Subtype/Type1/Name/F13/BaseFont/Symbol>>endobj
+16 0 obj<</Type/Font/Subtype/Type1/Name/F14/BaseFont/ZapfDingbats>>endobj
+19 0 obj<</Font<</F1 3 0 R/F2 4 0 R/F3 5 0 R/F4 6 0 R/F5 7 0 R/F6 8 0 R/F7 9 0 R/F8 10 0 R/F9 11 0 R/F10 12 0 R/F11 13 0 R/F12 14 0 R/F13 15 0 R/F14 16 0 R>>/ProcSet[/PDF/Text]/XObject<<>>>>endobj
+20 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 21 0 R/Rotate 0>>endobj
+21 0 obj<</Length 22 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*(                                   )Tj
+T*()Tj
+T*(     M A N U A L   F O R   T H E   M E R C U R Y   I N T E G R A T O R)Tj
+T*(     =================================================================)Tj
+T*()Tj
+T*(                     P A C K A G E   V E R S I O N   6)Tj
+T*(                     =================================)Tj
+T*()Tj
+T*(                           by  John E. Chambers)Tj
+T*()Tj
+T*(      \(with some subroutines supplied by Hal Levison and Martin Duncan\))Tj
+T*()Tj
+T*(                Dedicated to the memory of Fabio Migliorini)Tj
+T*()Tj
+T*()Tj
+T*(  Many thanks to all of you for reporting bugs and suggesting)Tj
+T*(  improvements. Special thanks to David Asher, Scott Manley and)Tj
+T*(  Eugenio Rivera for your help.)Tj
+T*()Tj
+T*(  < Last modified 1 March 2001 >)Tj
+T*()Tj
+T*()Tj
+T*( N.B. If you publish the results of calculations using MERCURY, please)Tj
+T*( ===  reference the package using J.E.Chambers \(1999\) ``A Hybrid)Tj
+T*(      Symplectic Integrator that Permits Close Encounters between)Tj
+T*(      Massive Bodies''. Monthly Notices of the Royal Astronomical)Tj
+T*(      Society, vol 304, pp793-799. )Tj
+T*()Tj
+T*()Tj
+T*(  C O N T E N T S)Tj
+T*(  ===============)Tj
+T*()Tj
+T*(  \(1\) Introduction)Tj
+T*()Tj
+T*(  \(2\) Initial preparations)Tj
+T*()Tj
+T*(  \(3\) How to do an integration)Tj
+T*()Tj
+T*(  \(4\) Converting data to orbital elements)Tj
+T*()Tj
+T*(  \(5\) Examining data on close encounters)Tj
+T*()Tj
+T*(  \(6\) Continuing an integration from dump files)Tj
+T*()Tj
+T*(  \(7\) Extending a previous integration)Tj
+T*()Tj
+T*(  \(8\) Note for previous users: Changes from Mercury5.)Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(1\)  I N T R O D U C T I O N)Tj
+T*(       =======================)Tj
+T*()Tj
+T*( MERCURY is a general-purpose software package for doing N-body)Tj
+T*( integrations. It is designed to calculate the orbital evolution of)Tj
+T*( objects moving in the gravitational field of a large central body.)Tj
+T*( For example MERCURY can be used to simulate the motion of the planets,)Tj
+T*( asteroids and comets orbiting the Sun; or a system of moons orbiting)Tj
+T*( a planet; or a planetary system orbiting another star.)Tj
+T*()Tj
+ET
+endstream
+endobj
+22 0 obj
+2286
+endobj
+23 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 24 0 R/Rotate 0>>endobj
+24 0 obj<</Length 25 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*( MERCURY is written in Fortran 77. The code is slightly non standard)Tj
+T*( \(e.g. it contains `end do' statements\) but it should work using most)Tj
+T*( compilers.)Tj
+T*()Tj
+T*( MERCURY currently includes the following N-body algorithms:)Tj
+T*()Tj
+T*(   o A second-order mixed-variable symplectic \(MVS\) algorithm)Tj
+T*(     incorporating simple symplectic correctors \(see J.Wisdom et al.)Tj
+T*(     1996, Fields Instit. Commun. vol 10 pp217\) - this is very fast )Tj
+T*(     but it cannot compute close encounters between objects.)Tj
+T*()Tj
+T*(   o A general Bulirsch-Stoer - slow but accurate in most situations.)Tj
+T*(     You can use this when all else fails, or to test whether the other)Tj
+T*(     algorithms are appropriate for the problem you want to study.)Tj
+T*()Tj
+T*(   o Conservative Bulirsch-Stoer - twice as fast as the general BS)Tj
+T*(     routine, but it will only work for conservative systems, in which)Tj
+T*(     accelerations are a function of position only \(e.g. Newtonian)Tj
+T*(     gravity, but not General Relativity\).)Tj
+T*()Tj
+T*(   o Everhart's RA15 \(RADAU\) - about 2-3 times faster than the general)Tj
+T*(     version of Bulirsch-Stoer. Usually reliable, except for very close)Tj
+T*(     encounters or very eccentric \(e.g. Sun grazing\) orbits.)Tj
+T*()Tj
+T*(   o Hybrid symplectic/Bulirsch-Stoer integrator - very fast but only)Tj
+T*(     moderately accurate. This algorithm can compute close encounters.)Tj
+T*()Tj
+T*( N.B. The symplectic integrators may give spurious results if some)Tj
+T*( ===  objects have highly eccentric orbits during an integration.)Tj
+T*()Tj
+T*( MERCURY includes the effects of Newtonian gravitational forces between)Tj
+T*( bodies that are assumed to be point masses. It can also calculate)Tj
+T*( non-gravitational forces for comets \(using equations by B.Marsden et al.)Tj
+T*( 1973. Astron. J. vol 78, pp211\). You can include the effects of other)Tj
+T*( forces, using some algorithms, by modifying the subroutine mfo_user.for.)Tj
+T*()Tj
+T*( The MERCURY package consists of several drivers and subroutines,)Tj
+T*( together with a number of input files that you may want to alter to)Tj
+T*( suit your application.)Tj
+T*()Tj
+T*()Tj
+T*( The Drivers)Tj
+T*( -----------)Tj
+T*()Tj
+T*( 1\) mercury6_1.for)Tj
+T*()Tj
+T*( This is the basic integration programme. It contains all the)Tj
+T*( subroutines you need to carry out integrations using any of the )Tj
+T*( algorithms described above. mercury6_1.for produces some output files)Tj
+T*( that are in a machine-independent compressed format, and you will)Tj
+T*( need the following programmes to convert this output into a format)Tj
+T*( you can read.)Tj
+T*()Tj
+T*( 2\) element6.for)Tj
+T*()Tj
+T*( This programme converts an output file created by mercury6_1.for into)Tj
+T*( a set of files containing Keplerian orbital elements for each of the)Tj
+T*( objects in the integration. These files allow you to see how object's)Tj
+T*( orbits change with time, and can be used as the basis for making)Tj
+T*( graphs or movies using a graphics package.)Tj
+ET
+endstream
+endobj
+25 0 obj
+3089
+endobj
+26 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 27 0 R/Rotate 0>>endobj
+27 0 obj<</Length 28 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*()Tj
+T*( 3\) close6.for)Tj
+T*()Tj
+T*( This programme converts an output file produced by mercury6_1.for)Tj
+T*( into a set of files containing details of close encounters between)Tj
+T*( objects during the integration.)Tj
+T*()Tj
+T*()Tj
+T*( Other files)Tj
+T*( -----------)Tj
+T*()Tj
+T*( 1\) mercury.inc)Tj
+T*()Tj
+T*( This contains constants and general parameters used by programmes in)Tj
+T*( the mercury package. You may want to alter some of the parameters before)Tj
+T*( you compile and run mercury6_1.for)Tj
+T*()Tj
+T*( 2\) swift.inc)Tj
+T*()Tj
+T*( This contains constants and parameters used in the subroutines written)Tj
+T*( by H.Levison and M.Duncan \(1994, Icarus, vol 108, pp18\). These)Tj
+T*( subroutines have names that begin with either `drift' or `orbel'.)Tj
+T*()Tj
+T*( N.B. If you change mercury.inc or swift.inc, you must recompile the )Tj
+T*( ===  driver programmes \(mercury6_1.for etc\) for the changes to take)Tj
+T*(      effect.)Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(2\)  I N I T I A L   P R E P A R A T I O N S)Tj
+T*(       =======================================)Tj
+T*()Tj
+T*( Before using the MERCURY package for the first time, you should do the)Tj
+T*( following:)Tj
+T*()Tj
+T*( a\) Make sure you have copies of these files:)Tj
+T*(      mercury6_1.for)Tj
+T*(      mercury.inc)Tj
+T*(      swift.inc)Tj
+T*(      element6.for)Tj
+T*(      close6.for)Tj
+T*(      message.in)Tj
+T*(      files.in)Tj
+T*(    You will need some additional input files to run the programmes in the)Tj
+T*(    MERCURY package, but you can create these yourself \(see the following)Tj
+T*(    sections for details\).)Tj
+T*()Tj
+T*( b\) Compile mercury6_1.for. The precise command you use will depend on)Tj
+T*(    your Fortran compiler. I suggest you call the executable version)Tj
+T*(    of the programme mercury6)Tj
+T*(    e.g. On Linux systems, try     g77 -o mercury6 mercury6_1.for)Tj
+T*(         On DEC Unix systems, try  f77 -o mercury6 mercury6_1.for)Tj
+T*(    )Tj
+T*( c\) Compile element6.for. I suggest you call the executable element6)Tj
+T*()Tj
+T*( d\) Compile close6.for. I suggest you call the executable close6)Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(3\)  H O W   T O   D O   A N   I N T E G R A T I O N)Tj
+ET
+endstream
+endobj
+28 0 obj
+2388
+endobj
+29 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 30 0 R/Rotate 0>>endobj
+30 0 obj<</Length 31 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*(       ===============================================)Tj
+T*()Tj
+T*( a\) Make sure the compiled version of mercury6_1.for exists.)Tj
+T*()Tj
+T*( b\) Make sure each of the input files described below exists, and alter)Tj
+T*(    them to suit your needs.)Tj
+T*()Tj
+T*( c\) Run the compiled version of mercury6_1.for)Tj
+T*(    e.g. On Unix or Linux systems, use the command:   ./mercury6)Tj
+T*()Tj
+T*(    For long integrations, you may want to run the programme in the)Tj
+T*(    background or as a batch job.)Tj
+T*()Tj
+T*( d\) Read the information summary file produced by mercury6_1.for to make)Tj
+T*(    sure that no problems occurred during the integration. You can read)Tj
+T*(    this file while mercury6_1.for is still running.)Tj
+T*()Tj
+T*()Tj
+T*( The Input Files)Tj
+T*( ---------------)Tj
+T*()Tj
+T*( 1\) files.in)Tj
+T*()Tj
+T*( This should contain a list of 10 names for the input and output files)Tj
+T*( used by mercury6_1.for. List each file name on a separate line.)Tj
+T*()Tj
+T*( The first 3 names should be input files that already exist.)Tj
+T*( In order, these are:)Tj
+T*()Tj
+T*(  i\) A file containing initial data for the Big bodies in the integration)Tj
+T*(     \(e.g. planets in the Solar System\).)Tj
+T*()Tj
+T*(  ii\) A file containing initial data for the Small bodies in the integration)Tj
+T*(      \(e.g. asteroids or comets that you want to include\).)Tj
+T*()Tj
+T*(  iii\) A file containing parameters used by the integrator \(e.g. start)Tj
+T*(       and end times of the integration etc.\).)Tj
+T*()Tj
+T*( The MERCURY package includes some sample versions of these files which)Tj
+T*( you can use as templates. I call these big.in, small.in and param.in)Tj
+T*( respectively.)Tj
+T*()Tj
+T*( The last 7 names in files.in are the names that mercury6_1.for will use)Tj
+T*( for its output files. In order, these will contain:)Tj
+T*()Tj
+T*(  iv\)   Position and velocity information for the objects in the)Tj
+T*(        integration, produced at periodic intervals.)Tj
+T*(  v\)    Details of close encounters that occur during the integration.)Tj
+T*(  vi\)   A summary of the integration parameters used in by the integrator,)Tj
+T*(        and a list of any events that took place \(e.g. collisions between)Tj
+T*(        objects\).)Tj
+T*(  vii\)  A dump file containing data for the Big bodies. You can use this)Tj
+T*(        to continue the integration if your computer crashes or the)Tj
+T*(        programme is interupted.)Tj
+T*(  viii\) A dump file containing data for the Small bodies.)Tj
+T*(  ix\)   A dump file containing the integration parameters.)Tj
+T*(  x\)    An additional dump file containing other variables used by)Tj
+T*(        mercury6_1.for)Tj
+T*()Tj
+T*( I usually call these 7 files xv.out, ce.out, info.out, big.dmp,)Tj
+ET
+endstream
+endobj
+31 0 obj
+2789
+endobj
+32 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 33 0 R/Rotate 0>>endobj
+33 0 obj<</Length 34 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*( small.dmp, param.dmp and restart.dmp)Tj
+T*()Tj
+T*( 2\) big.in)Tj
+T*()Tj
+T*( This file contains the initial data for all the Big bodies in the)Tj
+T*( integration EXCEPT for the central body \(i.e. the Sun if you are)Tj
+T*( integrating the Solar System\). A Big body is defined as one that)Tj
+T*( perturbs and interacts with all other objects during the integration.)Tj
+T*()Tj
+T*( Any lines beginning with the \) character are assumed to be comments,)Tj
+T*( and will be ignored by mercury6_1.for, however, you should not delete)Tj
+T*( the first comment line beginning with \)O+_06)Tj
+T*()Tj
+T*( o The first non-comment line should end with a word that tells the)Tj
+T*(   programme what format you use for the initial data. You should specify)Tj
+T*(   either)Tj
+T*()Tj
+T*( Cartesian = for xyz coordinates and velocities. Distances should be)Tj
+T*(             in AU and velocities in AU per day \(1 day = 86400 seconds\). )Tj
+T*()Tj
+T*( Asteroidal = Keplerian orbital elements, in an `asteroidal' format.)Tj
+T*(              i.e.  a e I g n M, where)Tj
+T*(               a = semi-major axis \(in AU\))Tj
+T*(               e = eccentricity)Tj
+T*(               I = inclination \(degrees\))Tj
+T*(               g = argument of pericentre \(degrees\))Tj
+T*(               n = longitude of the ascending node \(degrees\))Tj
+T*(               M = mean anomaly \(degrees\))Tj
+T*()Tj
+T*( Cometary = Keplerian orbital elements in a `cometary' format.)Tj
+T*(            i.e.  q e I g n T, where)Tj
+T*(             q = pericentre distance \(AU\))Tj
+T*(             e,I,g,n = as above)Tj
+T*(             T = epoch of pericentre \(days\))Tj
+T*()Tj
+T*( o The next line should end with the epoch of osculation in days \(i.e.)Tj
+T*(   the time at which the initial coordinates/elements are valid\).)Tj
+T*()Tj
+T*(   E.g. the first few lines of big.in might look like this:)Tj
+T*( )Tj
+T*( \)O+_06 Big-body initial data  \(WARNING: Do not delete this line!!\))Tj
+T*( \) Lines beginning with `\)' are ignored.)Tj
+T*( \)---------------------------------------------------------------------)Tj
+T*(  style \(Cartesian, Asteroidal, Cometary\) = Asteroid)Tj
+T*(  epoch \(in days\) = 2451544.5)Tj
+T*()Tj
+T*( o The remaining lines provide data for each Big body. The first line)Tj
+T*(   for each body should begin with the body's name, having up to 8 )Tj
+T*(   characters.)Tj
+T*(   After that you can include any of the following on the same line:)Tj
+T*()Tj
+T*(   m = X    where X is a real number, to indicate the body's mass in)Tj
+T*(            Solar masses. If you don't specify a value the mass is)Tj
+T*(            assumed to be 0.)Tj
+T*()Tj
+T*(   r = X    where X is a real number, to indicate the maximum)Tj
+T*(            distance from the body \(in Hill radii\) that constitutes)Tj
+T*(            a close encounter. If you don't include this the default)Tj
+T*(            is r=1)Tj
+T*()Tj
+ET
+endstream
+endobj
+34 0 obj
+2914
+endobj
+35 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 36 0 R/Rotate 0>>endobj
+36 0 obj<</Length 37 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*(   d = X    where X is a real number, to indicate the density of the)Tj
+T*(            body in g/cm^3. If you don't include this the default is d=1)Tj
+T*()Tj
+T*(   a1 = X   where X is a real number, to indicate the A1 non-gravitational)Tj
+T*(            force parameter for this body. Realistically this should be)Tj
+T*(            zero for Big bodies \(the default is 0\).)Tj
+T*()Tj
+T*(   a2 = X   where X is a real number, to indicate the A2 non-gravitational)Tj
+T*(            force parameter for this body \(the default is 0\).)Tj
+T*()Tj
+T*(   a3 = X   where X is a real number, to indicate the A1 non-gravitational)Tj
+T*(            force parameter for this body \(the default is 0\).)Tj
+T*()Tj
+T*(   E.g. the line might look something like this:)Tj
+T*(     MARS   m=3.22715144505386530E-07 d= 3.94)Tj
+T*()Tj
+T*( The next line\(s\) for a body should contain the 6 initial coordinates and)Tj
+T*( velocities or the 6 orbital elements, separated by one or more spaces or )Tj
+T*( carriage returns. After these numbers you should give the 3 components)Tj
+T*( of spin angular momentum for the body, in units of solar masses AU^2 per)Tj
+T*( day \(if in doubt enter these as 0\).)Tj
+T*()Tj
+T*()Tj
+T*( 3\) small.in)Tj
+T*()Tj
+T*( This file contains the initial data for all the Small bodies in the)Tj
+T*( integration. A Small body is defined as one that only perturbs and)Tj
+T*( interacts with Big bodies during the integration. Hence, Small bodies)Tj
+T*( ignore one another completely \(i.e they do not perturb one another,)Tj
+T*( and they cannot collide with each other\).)Tj
+T*( If you give these objects zero mass they will behave as test particles.)Tj
+T*()Tj
+T*( Any lines beginning with the \) character are assumed to be comments,)Tj
+T*( and will be ignored by mercury6_1.for, however, you should not delete)Tj
+T*( the first comment line beginning with \)O+_06)Tj
+T*()Tj
+T*( o The first non-comment line should end with a word that tells the)Tj
+T*(   programme what format you use for the initial data. The possible)Tj
+T*(   formats are the same as those in big.in)Tj
+T*()Tj
+T*( o The remaining lines provide data for each Small body. These are)Tj
+T*(   exactly analogous to the lines in big.in, except that you can also)Tj
+T*(   specify an epoch of osculation for each Small body using)Tj
+T*()Tj
+T*(   ep = X   where X is a real number. If you don't include this the)Tj
+T*(            default is X = the same as the epoch for the Big bodies.)Tj
+T*(            Small bodies with differing epochs will be integrated)Tj
+T*(            to the same epoch prior to the main integration.)Tj
+T*()Tj
+T*(   E.g. the line might look something like this:)Tj
+T*(     HALLEY   Ep=2446480.5  a1=0.04d-8 A2 =0.0155d-8)Tj
+T*()Tj
+T*(   Note that if any of the Small bodies have different epochs than)Tj
+T*(   the Large bodies, the Small bodies must all have zero mass.)Tj
+T*()Tj
+T*( 4\) param.in)Tj
+T*()Tj
+T*( This file contains parameters that control how an integration)Tj
+T*( is carried out. Any lines beginning with the \) character are assumed)Tj
+T*( to be comments, and will be ignored by mercury6_1.for, however, you)Tj
+ET
+endstream
+endobj
+37 0 obj
+3155
+endobj
+38 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 39 0 R/Rotate 0>>endobj
+39 0 obj<</Length 40 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*( should not delete the first comment line beginning with \)O+_06)Tj
+T*()Tj
+T*( The file should contain the following items, one per line and in)Tj
+T*( this order \(the programme actually searches for information after)Tj
+T*( an `=' sign, so you may change the text of the message before this\).)Tj
+T*()Tj
+T*(   o The integration algorithm. Choose one of the following:)Tj
+T*()Tj
+T*(     mvs     : second-order mixed-variable symplectic)Tj
+T*(     bs      : Bulirsch-Stoer \(general\))Tj
+T*(     bs2     :    "       "   \(conservative systems only\))Tj
+T*(     radau   : RA15 \(RADAU\))Tj
+T*(     hybrid  : hybrid symplectic/Bulirsch-Stoer integrator)Tj
+T*()Tj
+T*(   o The time that the integration should start \(in days\). This doesn't)Tj
+T*(     have to be the same as the epoch of the Big bodies. Rather, the)Tj
+T*(     integrator will start producing output at this date. If you are)Tj
+T*(     integrating objects in the Solar System, you may want to measure)Tj
+T*(     time in Julian Day numbers \(e.g. 1st Jan 2000 = 2451544.5\))Tj
+T*()Tj
+T*(   o The time at which the integration will finish \(in days\).)Tj
+T*()Tj
+T*(   o The output interval \(in days\). This determines how often the)Tj
+T*(     programme will store orbital elements for the bodies.)Tj
+T*()Tj
+T*(   o The timestep used by the integrator \(in days\). For variable)Tj
+T*(     timestep algorithms \(e.g. Bulirsch-Stoer and Radau\), this is the)Tj
+T*(     stepsize used for the first timestep only. After that the programme)Tj
+T*(     will choose its own timestep. Note that if you choose a large)Tj
+T*(     initial timestep, the variable timestep algorithms may reduce it)Tj
+T*(     in order to maintain the desired accuracy.)Tj
+T*()Tj
+T*(   o A integration accuracy parameter. This is approximately how much)Tj
+T*(     error per step the variable-timestep algorithms will tolerate.)Tj
+T*(     It is also used by the hybrid algorithm during close approaches.)Tj
+T*(     This number is ignored by the MVS algorithm but you should)Tj
+T*(     provide a number anyway.)Tj
+T*()Tj
+T*( The next lines in param.in should contain options that you will only)Tj
+T*( want to change occasionally. If in doubt, you can use the same)Tj
+T*( options as the sample param.in file. The options are:)Tj
+T*()Tj
+T*(   o Should the integrator stop if a close encounter occurs \(yes or no\)?)Tj
+T*()Tj
+T*(   o Should the programme check for collisions and take appropriate)Tj
+T*(     action if they occur \(yes or no\)? If you answer no, all the)Tj
+T*(     bodies will behave as point masses.)Tj
+T*()Tj
+T*(   o Should collisions result in fragmentation \(yes or no\)? This)Tj
+T*(     version of MERCURY does not include fragmentation, so this is)Tj
+T*(     ignored at present. You should still specify yes or no however.)Tj
+T*()Tj
+T*(   o How should the time be expressed \(days or years\)? This option)Tj
+T*(     controls how information messages produced by mercury6_1.for are)Tj
+T*(     formatted.)Tj
+T*()Tj
+T*(   o Should time be measured with respect to the integration start)Tj
+T*(     time \(yes or no\)?)Tj
+T*(     If you choose `years' and `no' for the previous option and this)Tj
+T*(     one, the time will expressed as a Julian date before October)Tj
+ET
+endstream
+endobj
+40 0 obj
+3253
+endobj
+41 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 42 0 R/Rotate 0>>endobj
+42 0 obj<</Length 43 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*(     1582, and as a Gregorian date for later dates.)Tj
+T*()Tj
+T*(   o What level of output precision \(low, medium or high\)? This)Tj
+T*(     determines how many significant figures will be used to store)Tj
+T*(     the orbital elements \(roughly 4, 9 or 15\).)Tj
+T*()Tj
+T*(   o This line is no longer used. However, for backwards compatibility,)Tj
+T*(     you should still include a line here in param.in, although it)Tj
+T*(     doesn't matter what you put on this line.)Tj
+T*()Tj
+T*(   o Include the effects of general relativity \(yes or no\)? This)Tj
+T*(     version of MERCURY does not include relativity, so this is )Tj
+T*(     ignored at present.)Tj
+T*()Tj
+T*(   o Include the effects of the user-defined force routine \(yes or)Tj
+T*(     no\). You can add additional forces to the integrator in the)Tj
+T*(     subroutine mfo_user in mercury6_1.for)Tj
+T*()Tj
+T*( The remaining lines in param.in should contain some other parameters)Tj
+T*( that you will only need to change rarely. These are:)Tj
+T*()Tj
+T*(   o The distance from the central body at which objects are)Tj
+T*(     removed \(in AU\). These bodies are assumed to be so far from)Tj
+T*(     the central body that they are no longer important.)Tj
+T*(     Note that this number is used to scale the output \(on a log)Tj
+T*(     scale\), so don't make it bigger than you need to.)Tj
+T*()Tj
+T*(   o The radius of the central body \(in AU\). Objects coming closer)Tj
+T*(     than this are assumed to collide with the central body.)Tj
+T*(     This number is also used to scale the output \(on a log scale\).)Tj
+T*()Tj
+T*(   o The mass of the central body \(in solar masses\).)Tj
+T*()Tj
+T*(   o The J2 moment of the central body in units of its radius^2.)Tj
+T*()Tj
+T*(   o The J4 moment of the central body in units of its radius^4.)Tj
+T*()Tj
+T*(   o The J6 moment of the central body in units of its radius^6.)Tj
+T*()Tj
+T*(   o A line which is not used at present. Write whatever you like)Tj
+T*(     on this line.)Tj
+T*()Tj
+T*(   o Another line which is not used at present.)Tj
+T*()Tj
+T*(   o The changeover distance used by the hybrid integrator \(in Hill)Tj
+T*(     radii\). This is the minimum separation between objects before)Tj
+T*(     the hybrid \(close encounter\) part of the integrator takes effect.)Tj
+T*()Tj
+T*(   o The maximum number of timesteps between data dumps. This also)Tj
+T*(     controls how often mercury6_1.for notifies you of its progress.)Tj
+T*()Tj
+T*(   o The number of timesteps between other periodic effects. At)Tj
+T*(     present this controls how often mercury6_1.for checks for )Tj
+T*(     ejections and recomputes objects' Hill radii.)Tj
+T*()Tj
+T*( 5\) message.in)Tj
+T*()Tj
+T*( N.B. Alter the contents of this file at your peril!!)Tj
+T*( ===)Tj
+T*()Tj
+ET
+endstream
+endobj
+43 0 obj
+2788
+endobj
+44 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 45 0 R/Rotate 0>>endobj
+45 0 obj<</Length 46 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*( This file contains the text of various messages output by MERCURY,)Tj
+T*( together with an index number and the number of characters in the string)Tj
+T*( \(including spaces used for alignment\).)Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(4\)  C O N V E R T I N G   D A T A   T O   O R B I T A L   E L E M E N T S)Tj
+T*(       =====================================================================)Tj
+T*()Tj
+T*( After doing an integration you can see how the objects' orbits)Tj
+T*( varied over time. To do so, follow these steps:)Tj
+T*()Tj
+T*( a\) Make sure the output files produced by the original integration still)Tj
+T*(    exist.)Tj
+T*()Tj
+T*( b\) Make sure the compiled version of element6.for exists.)Tj
+T*()Tj
+T*( c\) Make sure each of the input files described below exists, and alter)Tj
+T*(    them to suit your needs.)Tj
+T*()Tj
+T*( d\) Run the compiled version of element6.for)Tj
+T*(    e.g. On Unix/Linux systems, use the command:   ./element6)Tj
+T*()Tj
+T*( The programme will produce a set of new files, one per object, containing)Tj
+T*( orbital elements. Each file has the name of the object with the extension)Tj
+T*( .aei)Tj
+T*()Tj
+T*( The Input Files)Tj
+T*( ---------------)Tj
+T*()Tj
+T*( 1\) element.in)Tj
+T*()Tj
+T*( This file contains parameters and options used by element6.for)Tj
+T*( Any lines beginning with the \) character are assumed to be comments,)Tj
+T*( and will be ignored by element6.for)Tj
+T*()Tj
+T*(   o In the first non-comment line, give the number N of compressed)Tj
+T*(     data files you want to read from. Usually this will be 1.)Tj
+T*(     \(If you specify more than one file, element6.for will combine)Tj
+T*(     the orbital elements from all the integrations into one set)Tj
+T*(     of output files\).)Tj
+T*()Tj
+T*(   o  The next N lines should contain the name\(s\) of the compressed)Tj
+T*(      data file\(s\) produced by mercury6_1.for Put each file name on a)Tj
+T*(      different line.)Tj
+T*()Tj
+T*(   o  At the end of the next line, indicate what origin you want to)Tj
+T*(      use for your elements. Choose between Central \(for elements)Tj
+T*(      with respect to the central body\), Barycentric \(for barycentric)Tj
+T*(      elements\) or Jacobi \(for Jacobi elements\).)Tj
+T*()Tj
+T*(   o  On the next line, specify the minimum time interval between the)Tj
+T*(      times at which you would like orbital elements. For example,)Tj
+T*(      if the original integration stored data every 100 days, but you)Tj
+T*(      are only interested in seeing orbital elements every 500 days,)Tj
+T*(      put 500 on this line in elements.in)Tj
+T*()Tj
+T*(   o On the next line say whether you would like time expressed in days)Tj
+T*(     or years \(write years or days\).)Tj
+T*()Tj
+ET
+endstream
+endobj
+46 0 obj
+2824
+endobj
+47 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 48 0 R/Rotate 0>>endobj
+48 0 obj<</Length 49 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*(   o Then, on a new line, state whether you want to express the time)Tj
+T*(     with respect to the integration start date \(write yes or no\).)Tj
+T*()Tj
+T*(   o Next comes a line indicating which orbital elements you want,)Tj
+T*(     and in what format. Each element is indicated by a code letter,)Tj
+T*(     followed by a number indicating the desired number of digits and)Tj
+T*(     decimal places. If the number of figures is followed by `e', then)Tj
+T*(     the programme will use exponential notation for that element.)Tj
+T*()Tj
+T*(     The code letters are:)Tj
+T*(      a = semi-major axis \(in AU\))Tj
+T*(      b = apocentre distance \(in AU, b is short for Big q\))Tj
+T*(      d = density \(g per cm^3\))Tj
+T*(      e = eccentricity)Tj
+T*(      f = true anomaly \(degrees\))Tj
+T*(      g = argument of perihelion \(degrees\))Tj
+T*(      i = inclination \(degrees\))Tj
+T*(      l = mean anomaly \(degrees\))Tj
+T*(      m = mass \(solar masses\))Tj
+T*(      n = longitude of ascending node)Tj
+T*(      o = obliquity \(degrees\))Tj
+T*(      p = longitude of perihelion \(degrees\))Tj
+T*(      q = pericentre distance \(AU\))Tj
+T*(      r = radial distance \(AU\))Tj
+T*(      s = spin period \(days\))Tj
+T*(      x, y or z = Cartesian coordinates x, y or z)Tj
+T*(      u, v or w = Cartesian velocities vx, vy or vz)Tj
+T*( )Tj
+T*(     E.g. a8.4 e8.6 i7.3 g7.3 n7.3 l7.3 m13e )Tj
+T*(          indicates that you want the semi-major axis \(8 digits including)Tj
+T*(          4 decimal places\), eccentricity \(8 digits including 6 decimal)Tj
+T*(          places\) etc.... and mass \(13 digits in exponential notation\).)Tj
+T*()Tj
+T*(    Note that if you choose to express an element using a large number)Tj
+T*(    of significant figures, the last few digits might not be meaningful)Tj
+T*(    if the output precision of the original integation was low or medium.)Tj
+T*()Tj
+T*(  o The remaining lines in elements.in should contain the names of the )Tj
+T*(    objects for which you want orbital elements. If you don't supply)Tj
+T*(    any names, the programme assumes that you want elements for all the)Tj
+T*(    objects.)Tj
+T*()Tj
+T*( 2\) message.in)Tj
+T*()Tj
+T*( This is the same file as used by mercury6_1.for)Tj
+T*()Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(5\)  E X A M I N I N G   D A T A   O N   C L O S E   E N C O U N T E R S)Tj
+T*(       ===================================================================)Tj
+T*()Tj
+T*( To examine details of close encounters that occurred during an)Tj
+T*( integration, follow these steps:)Tj
+T*()Tj
+T*( a\) Make sure the output files produced by the original integration still)Tj
+T*(    exist.)Tj
+T*()Tj
+T*( b\) Make sure the compiled version of close6.for exists.)Tj
+T*()Tj
+ET
+endstream
+endobj
+49 0 obj
+2829
+endobj
+50 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 51 0 R/Rotate 0>>endobj
+51 0 obj<</Length 52 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*( c\) Make sure each of the input files described below exists, and alter)Tj
+T*(    them to suit your needs.)Tj
+T*()Tj
+T*( d\) Run the compiled version of close6.for)Tj
+T*(    e.g. On Unix/Linux systems, use the command:   ./close6)Tj
+T*()Tj
+T*( The programme will produce a set of new files, one per object, containing)Tj
+T*( details of close encounters with that object. Each file has the name of )Tj
+T*( the object with the extension .clo)Tj
+T*()Tj
+T*( The Input Files)Tj
+T*( ---------------)Tj
+T*()Tj
+T*( 1\) close.in)Tj
+T*()Tj
+T*( This file contains parameters and options used by close6.for)Tj
+T*( Any lines beginning with the \) character are assumed to be comments,)Tj
+T*( and will be ignored by close6.for. Don't delete the first comment)Tj
+T*( line though.)Tj
+T*()Tj
+T*(   o In the first non-comment line, give the number N of compressed)Tj
+T*(     data files you want to read from. Usually this will be 1.)Tj
+T*(     \(If you specify more than one file, close6.for will combine)Tj
+T*(     close-encounter details from all the integrations into one set)Tj
+T*(     of output files\).)Tj
+T*()Tj
+T*(   o  The next N lines should contain the name\(s\) of the compressed)Tj
+T*(      data file\(s\) produced by mercury6_1.for Put each file name on a)Tj
+T*(      different line.)Tj
+T*()Tj
+T*(   o On the next line say whether you would like time expressed in days)Tj
+T*(     or years \(write years or days in close.in\).)Tj
+T*()Tj
+T*(   o Then, on a new line, state whether you want to express the time)Tj
+T*(     with respect to the integration start date \(write yes or no\).)Tj
+T*()Tj
+T*(  o The remaining lines in m_close.in should contain the names of the )Tj
+T*(    objects for which you want close-encounter details. If you don't)Tj
+T*(    supply any names, the programme assumes that you want details for)Tj
+T*(    all the objects.)Tj
+T*()Tj
+T*( 2\) message.in)Tj
+T*()Tj
+T*( The same file as used by mercury6_1.for)Tj
+T*()Tj
+T*( N.B. When using the hybrid symplectic algorithm, only those close)Tj
+T*( ===  encounters that are integrated using the Bulirsch-Stoer part of)Tj
+T*(      the integrator will be saved. In practice, this means that some)Tj
+T*(      distant ``close'' encounters will not be recorded.)Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(6\)  C O N T I N U I N G   A N   I N T E G R A T I O N   F R O M   )Tj
+T*(       ===========================================================)Tj
+T*()Tj
+T*(       D U M P   F I L E S)Tj
+T*(       ===================)Tj
+T*()Tj
+T*( If your computer crashes while MERCURY is doing an integration, all is)Tj
+T*( not lost. You can continue the integration from the point at which)Tj
+ET
+endstream
+endobj
+52 0 obj
+2749
+endobj
+53 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 54 0 R/Rotate 0>>endobj
+54 0 obj<</Length 55 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*( mercury6_1.for last saved data in dump files, rather than having to)Tj
+T*( redo the whole calculation. Just follow these steps:)Tj
+T*()Tj
+T*( a\) Make sure all of the input, output and dump files used by the original)Tj
+T*(    integration are still present.)Tj
+T*()Tj
+T*( b\) Make sure the filenames listed in files.in correspond to these files.)Tj
+T*()Tj
+T*( c\) Run the compiled version of mercury6_1.for)Tj
+T*()Tj
+T*( If for some reason one of the dump files has become corrupted, look)Tj
+T*( to see if you still have a set of files with the extension .tmp)Tj
+T*( produced during the original integration \(if you have subsequently)Tj
+T*( used mercury6_1.for to do another integration in the same directory,)Tj
+T*( you will have lost these unfortunately\). These .tmp files are duplicate)Tj
+T*( copies of the dump files. Copy each one so that they form a set of)Tj
+T*( uncorrupted dump files \(e.g. copy big.tmp to big.dmp etc.\), and then)Tj
+T*( run the compiled version of mercury6_1.for)Tj
+T*()Tj
+T*( N.B. It is important that you replace all the dump files with the .tmp)Tj
+T*( ===  files in this way, rather than just the file that is corrupted.)Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(7\)  E X T E N D I N G   A   P R E V I O U S   I N T E G R A T I O N)Tj
+T*(       ===============================================================)Tj
+T*()Tj
+T*( If you want to extend an old integration that finished successfully)Tj
+T*( \(i.e. not one that crashed\), follow these steps:)Tj
+T*()Tj
+T*( a\) Make sure all of the input, output and dump files used by the original)Tj
+T*(    integration are still present.)Tj
+T*()Tj
+T*( b\) Make sure the filenames listed in files.in correspond to these files.)Tj
+T*()Tj
+T*( c\) Change the finish time in the parameter dump file \(see section 3\))Tj
+T*(    to the end point of the extended integration.)Tj
+T*()Tj
+T*( d\) Run the compiled version of mercury6_1.for)Tj
+T*()Tj
+T*( ------------------------------------------------------------------------------)Tj
+T*()Tj
+T*(  \(8\)  C H A N G E S   F R O M   M E R C U R Y   5)Tj
+T*(       ===========================================)Tj
+T*()Tj
+T*( The code has been restructured, primarily to make it easier to)Tj
+T*( incorporate new coordinate systems \(binary-star coordinates, and)Tj
+T*( some others that I'm tinkering with, that are not included in this)Tj
+T*( version\). All the coordinate change routines now accept the same)Tj
+T*( input and output \(except going to/from Keplerian elements\).)Tj
+T*( A major result of this is that the arrays for objects are now)Tj
+T*( indexed starting at 2 instead of 1 \(the central body uses index 1\). )Tj
+T*()Tj
+T*( The compressed output has changed again \(!! sorry about that\).)Tj
+T*( However, the new version is an improvement for a few reasons.)Tj
+T*( Firstly, it makes it possible to choose your coordinate origin)Tj
+T*( \(central/barycentric/Jacobi\) when you run the decompression)Tj
+T*( programme rather than when you do the original integration.)Tj
+T*( Secondly, it handles hyperbolic elements better - no more problems)Tj
+T*( with the hyperbolic mean anomaly. In addition, you no longer have)Tj
+ET
+endstream
+endobj
+55 0 obj
+3248
+endobj
+56 0 obj<</Type/Page/Parent 18 0 R/Resources 19 0 R/Contents 57 0 R/Rotate 0>>endobj
+57 0 obj<</Length 58 0 R>>stream
+BT
+/F1 10 Tf
+1 0 0 1 50 752 Tm
+12 TL
+T*( to specify emax or qmin in the param.in file - the new compressed)Tj
+T*( format can handle all osculating values of q and e. Finally, it is )Tj
+T*( now possible to produce .aei files when the number of objects in the)Tj
+T*( integration exceeds the number of files that can be open at the)Tj
+T*( same time for your operating system.)Tj
+T*()Tj
+T*( Rather than remodifying m_elem.for to cope with yet another type)Tj
+T*( of compressed output, I have written a new programme called elements)Tj
+T*( \(which is also easier to pronounce\). Use this for compressed output)Tj
+T*( generated by Mercury6, and use m_elem5 for the earlier versions of)Tj
+T*( Mercury.)Tj
+T*()Tj
+T*( A bug fix: Mercury5_2, and earlier, had a bug which occurred when)Tj
+T*( integrating test particles using the MVS algorithm. This incorrectly)Tj
+T*( modelled the perturbations due to the innermost massive body.)Tj
+T*()Tj
+T*( The central-body oblateness terms J2, J4 and J6 now function. These)Tj
+T*( were also included in a few older versions of Mercury, but were not)Tj
+T*( properly tested until now.)Tj
+T*()Tj
+T*( The MVS algorithm now incorporates simple symplectic correctors)Tj
+T*( which should improve the accuracy using this algorithm. The)Tj
+T*( correctors remove error terms proportional to eh^3 thru eh^6, where)Tj
+T*( h is the timestep and e is the ratio of the object masses to the)Tj
+T*( central mass. Hence, the leading error terms are proportional to)Tj
+T*( e^2h^3 and eh^7.)Tj
+T*()Tj
+T*( Close encounter details are now output in batches, rather than after)Tj
+T*( every encounter. Furthermore, the programme does not always do regular)Tj
+T*( data dumps in addition to data dumps at every output interval. These)Tj
+T*( changes are made in the hope that they will reduce delays caused by)Tj
+T*( accessing the hard disk.)Tj
+ET
+endstream
+endobj
+58 0 obj
+1849
+endobj
+17 0 obj<</Type/Catalog/Pages 18 0 R>>endobj
+18 0 obj<</Type/Pages/Count 13/MediaBox[0 0 612 792]/Kids[20 0 R 23 0 R 26 0 R 29 0 R 32 0 R 35 0 R 38 0 R 41 0 R 44 0 R 47 0 R 50 0 R 53 0 R 56 0 R ]>>endobj
+xref
+0 59
+0000000000 65535 f 0000000015 00000 n 0000000142 00000 n 0000001979 00000 n 0000002061 00000 n 0000002151 00000 n 0000002238 00000 n 0000002332 00000 n 0000002416 00000 n 0000002508 00000 n 0000002597 00000 n 0000002694 00000 n 0000002781 00000 n 0000002870 00000 n 0000002957 00000 n 0000003050 00000 n 0000003118 00000 n 0000041578 00000 n 0000041623 00000 n 0000003192 00000 n 0000003389 00000 n 0000003474 00000 n 0000005810 00000 n 0000005831 00000 n 0000005916 00000 n 0000009055 00000 n 0000009076 00000 n 0000009161 00000 n 0000011599 00000 n 0000011620 00000 n 0000011705 00000 n 0000014544 00000 n 0000014565 00000 n 0000014650 00000 n 0000017614 00000 n 0000017635 00000 n 0000017720 00000 n 0000020925 00000 n 0000020946 00000 n 0000021031 00000 n 0000024334 00000 n 0000024355 00000 n 0000024440 00000 n 0000027278 00000 n 0000027299 00000 n 0000027384 00000 n 0000030258 00000 n 0000030279 00000 n 0000030364 00000 n 0000033243 00000 n 0000033264 00000 n 0000033349 00000 n 0000036148 00000 n 0000036169 00000 n 0000036254 00000 n 0000039552 00000 n 0000039573 00000 n 0000039658 00000 n 0000041557 00000 n trailer
+<</Size 59/Root 17 0 R/Info 1 0 R>>
+startxref
+41782
+%%EOF

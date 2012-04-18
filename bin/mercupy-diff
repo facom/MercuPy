@@ -1,0 +1,85 @@
+#!/usr/bin/env python
+"""
+################################################################################
+MercuPy Wrap
+Jorge Zuluaga (C) 2011
+################################################################################
+"""
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#IMPORT UTILITIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+from mercupy import *
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD SYSTEM CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inifile="system.config"
+state=loadconf(inifile)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#DATA FILES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+try:file1=argv[1]
+except:
+    print "You must provide two files to compare"
+    sys.exit(1)
+
+if not os.path.lexists(file1):
+    print "Data file '%s' does not exist"%file1
+    sys.exit(1)
+
+try:file2=argv[2]
+except:
+    print "You must provide a second file to compare"
+    sys.exit(1)
+
+if not os.path.lexists(file2):
+    print "Data file '%s' does not exist"%file2
+    sys.exit(1)
+
+basename=System("basename %s"%file1,out=True)
+parts=basename.split(".")
+bodyname=parts[0]
+
+try:outfile=argv[3]
+except:
+    outfile="%s/%s.err"%(OUTDIR,bodyname)
+
+print "Computing difference between '%s' and '%s' and storing differences in '%s'..."%(file1,file2,outfile)
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#READING DATA
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+data1=np.loadtxt(file1)
+data2=np.loadtxt(file2)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#SORT DATA
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+sdata1=data1[data1[:,0].argsort(),:]
+sdata2=data2[data2[:,0].argsort(),:]
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#COMPUTE DIFFERENCE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+delta=np.zeros_like(sdata1)
+for i in range(0,sdata1.shape[0]):
+    for j in range(1,sdata1.shape[1]):
+        delv=abs(sdata1[i,j]-sdata2[i,j])
+        mean=abs(sdata1[i,j]+sdata2[i,j])/2
+        if abs(mean)<1E-20:
+            delta[i,j]=0
+        else:
+            delta[i,j]=delv/mean
+    delta[i,0]=sdata1[i,0]
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#SAVE RESULT
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tmpfile="tmp/%s.tmp"%bodyname
+np.savetxt(tmpfile,delta,fmt=(state.OUTPUT_FORMAT))
+System("(head -n 1 %s;cat %s)>%s"%(file1,tmpfile,outfile))
+
+print "Generating error plot..."
+System("ERROR_FILE=%s BODY_NAME=%s gnuplot bin/errors.gpl"%(outfile,bodyname))
+
+print "Done."

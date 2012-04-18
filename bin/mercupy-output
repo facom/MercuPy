@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+"""
+################################################################################
+MercuPy Wrap
+Jorge Zuluaga (C) 2011
+################################################################################
+"""
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#IMPORT UTILITIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+from mercupy import *
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD SYSTEM CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inifile="system.config"
+state=loadconf(inifile)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#DATA FILE HEADER
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+helems=\
+    state.POSITION_ELEMENTS.split()+\
+    state.ORBITAL_ELEMENTS.split()+\
+    state.PHYSICAL_ELEMENTS.split()+\
+    state.ADDITIONAL_ELEMENTS.split()
+NELS=len(helems)
+
+f=state.OUTPUT_FORMAT.replace("e","s")+" "
+header="#"+f%("1:t")
+i=2
+for el in helems:
+    header+=f%("%d:%s"%(i,el))
+    i+=1
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#CHECK IF A PREVIOUS PHASE WAS RAN
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if os.path.lexists(OUTDIR+"/prevphase"):
+    phase,time=System("cat output/prevphase",out=True).split()
+    endtime=float(time)
+else:
+    endtime=0
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#INDEXING BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+i=0
+BID=dict()
+for body in state.BODIES:
+    BID[body["Code"]]=i
+    body["Id"]=i
+    i+=1
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOAD THE OUTPUT DATA FROM FILES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ShowObjects=[]
+cbody=state.BODIES[0]
+for body in state.BODIES:
+    if not body['ShowObject']:continue
+    if not body['Activate']:continue
+    if body["ShowObject"] and body["Type"]!=CENTRAL:
+        print "Getting data for body %s..."%body["Code"]
+        fbody=state.BODIES[BID[body["Frame"]]]
+        ObjectProperties(body,fbody,cbody,COORDINATES)
+        io=0
+        jo=1
+        for ext in ["pos","orb","phy"]:
+            print "\tRetrieving information from '%s' file..."%ext
+            bname=body["Code"]
+            fname=bname+"."+ext
+            ftmp="tmp/"+fname+".tmp"
+            fstore="tmp/%s.dat"%bname
+            fplain="%s/%s.dat"%(OUTDIR,bname)
+            
+            #CONVERT FILE TO PLAIN FORMAT
+            System("sed -e 's/\\*/0/gi' %s/%s | grep -v '^$' | grep -v '%s' | grep -v 'Time' > %s"%(OUTDIR,fname,bname,ftmp))
+            
+            #READ DATA
+            data=np.loadtxt(ftmp)
+            times=data[:,0]+endtime
+            elements=data[:,1:]
+
+            #SAVE RESULT
+            ntimes=times.shape[0]
+	    nels=elements.shape[1]
+            if io==0:
+                datsel=np.zeros((ntimes,NELS+1))
+
+            for i in range(0,ntimes):
+                if io==0: 
+                    datsel[i,0]=times[i]
+                for j in range(jo,jo+nels):
+                    datsel[i,j]=elements[i,j-jo]
+
+            jo+=nels
+            io+=1
+        
+        #############################################################
+        #ADDITIONAL ELEMENTS
+        #############################################################
+        for i in range(0,ntimes):
+            m=datsel[i,20]
+            body["Mass"]=m*UMMERC
+            a=datsel[i,8]
+            rvec=datsel[i,1:4]
+            vvec=datsel[i,4:7]
+            #==============================
+            #ORBITAL ANGULAR MOMENT
+            #==============================
+            L=m*mod(np.cross(rvec,vvec))
+            #==============================
+            #ENERGY
+            #==============================
+            E=-GCONST*cbody['Mass']*m/(2*a)
+            #==============================
+            #INSTANTANEOUS PERIOD
+            #==============================
+            if a>0:
+                P=np.sqrt((a*ULMERC)**3*4*np.pi**2/\
+                              (GCONST*(cbody['Mass']+m*UMMERC)))/YEARS
+            else:
+                P=0.0
+            #==============================
+            #RADIUS IN KILOMETERS
+            #==============================
+            R,d=MassRadiusRelationship(body["Mass"],
+                                       body["ObjectClass"])
+            #STORE
+            datsel[i,22]=R
+            datsel[i,23]=P
+            datsel[i,24]=E
+            datsel[i,25]=L
+            
+        np.savetxt(fstore,datsel,fmt=(state.OUTPUT_FORMAT))
+        System("(echo '%s';cat %s)>%s"%(header,fstore,fplain))
+        

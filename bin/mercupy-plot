@@ -1,0 +1,415 @@
+#!/usr/bin/env python
+"""
+################################################################################
+MercuPy Wrap
+Jorge Zuluaga (C) 2011
+################################################################################
+PLOTTING UTILITY
+"""
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#IMPORT UTILITIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+from matplotlib import use as mluse
+mluse("Agg")
+from pylab import *
+from mercupy import *
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#MACROS
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#PLOT
+plt=matplotlib.pyplot
+fonts=matplotlib.font_manager.FontProperties
+#INDEXES
+X,Y,Z=0,1,2
+PHI,THETA=0,1
+#NUM POINT IN AXES
+NAXES=100
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOADING SYSTEM CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inifile="system.config"
+if not os.path.lexists(inifile):
+    error("Initial state file '%s' does not exist."%inifile)
+print "Reading initial file: %s"%inifile
+state=loadconf(inifile)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#LOADING PLOT CONFIGURATION FILE
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+plotfile="plot.config"
+if not os.path.lexists(plotfile):
+    error("Plot configuration file '%s' does not exist."%plotfile)
+print "Reading plot configuration: %s"%plotfile
+plot=loadconf(plotfile)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#INDEXING BODIES
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+i=0
+BID=dict()
+for body in state.BODIES:
+    BID[body["Code"]]=i
+    body["Id"]=i
+    i+=1
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#PREPARE PLOT
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+plt.close("all")
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#MAIN PLOT LOOP
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for plot in plot.PLOTS:
+    plot=dictobj(plot)
+    if not plot.activate:continue
+    if plot.type is "phasespace":
+        #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        #PHASE SPACE PLOT
+        #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        print "Phase Space Plot"
+        fig=plt.figure()
+        ax=plt.axes()
+        ib=0
+        xmaxs=[];xmins=[]
+        ymaxs=[];ymins=[]
+        zmaxs=[];zmins=[]
+        for bcode in plot.bodies:
+            try:bid=BID[bcode]
+            except:
+                print "Body '%s' does not exist"%bcode
+                continue
+            body=state.BODIES[bid]
+            if not body['Activate']:
+                print "Body %s is not active..."%bcode
+                continue
+            bname=body['Name']
+            #==============================
+            #READ DATA
+            #==============================
+            print "Getting data for %s (%s)..."%(bcode,bname)
+            if not os.path.lexists('%s/%s.%s'%(OUTDIR,bcode,plot.extension)):
+                print "FILE: '%s/%s.%s'"%(OUTDIR,bcode,plot.extension)
+                print "Body '%s' has no data '%s'"%(bcode,plot.extension)
+                continue
+
+            c=[]
+            for coord in plot.coordinates:
+                icoord=ELSINDEX[coord]
+                tc=np.loadtxt('%s/%s.%s'%(OUTDIR,bcode,plot.extension),
+                              usecols=(0,icoord))
+
+                cv=[]
+                i=0
+                for t,cr in tc:
+                    if i==0:
+                        tref=t
+                        i+=1
+                    if abs(t-tref)>=abs(plot.tini) and abs(t-tref)<=abs(plot.tend):
+                        cv+=[cr]
+                c+=[np.array(cv)]
+            
+            if c[X].shape[0] is 0 or c[Y].shape[0] is 0 or c[Z].shape[0] is 0:
+               print "No data found for body '%s'"%bcode
+               continue
+            
+            R=np.array([c[X],c[Y],c[Z]]).transpose()
+            
+            #==============================
+            #AXIS DATA
+            #==============================
+            if plot.axes or plot.xyplane:
+                xmin,xmax=c[X].min(),c[X].max()
+                ymin,ymax=c[Y].min(),c[Y].max()
+                zmin,zmax=c[Z].min(),c[Z].max()
+                xmin=min(0,xmin)
+                xmax=max(0,xmax)
+                ymin=min(0,ymin)
+                ymax=max(0,ymax)
+                xmins+=[min(0,xmin)]
+                xmaxs+=[max(0,xmax)]
+                ymins+=[min(0,ymin)]
+                ymaxs+=[max(0,ymax)]
+                zmins+=[min(0,zmin)]
+                zmaxs+=[max(0,zmax)]
+
+            #==============================
+            #ROTATE TO VIEWER PERSPECTIVE
+            #==============================
+            Xv,Yv,Zv=rotate3D(R,plot.view[PHI],plot.view[THETA])
+
+            #==============================
+            #PLOT
+            #==============================
+            porbit=plt.plot(Xv,Yv,label='%s'%bname)
+
+            #==============================
+            #DECORATION
+            #==============================
+            #ORBIT STYLE
+            try:
+                style=plot.styles[ib]
+            except:
+                style=plot.styles[0]
+
+            plt.setp(porbit,
+                     color=style[0],
+                     linestyle=style[1],
+                     linewidth=style[2],
+                     marker=style[3],
+                     markersize=style[4])
+
+            #LEGENDS
+            if plot.legends:
+                fl=fonts()
+                fl.set_size('medium')
+                ax.legend(
+                    bbox_to_anchor=(0.0,1.02,1.0,0.4),
+                    loc=3,ncol=6,mode="expand",prop=fl)
+
+            ib+=1
+
+        #==============================
+        #AXIS DATA
+        #==============================
+        if (plot.axes or plot.xyplane) and ib>0:
+            xmin=min(xmins);xmax=max(xmaxs)
+            ymin=min(ymins);ymax=max(ymaxs)
+            zmin=min(zmins);zmax=max(zmaxs)
+
+        if plot.axes and ib>0:
+                xaxis=np.zeros((NAXES,3))
+                for i in range(0,100):xaxis[i,X]=xmin+(xmax-xmin)/NAXES*i
+                yaxis=np.zeros((NAXES,3))
+                for i in range(0,100):yaxis[i,Y]=ymin+(ymax-ymin)/NAXES*i
+                zaxis=np.zeros((NAXES,3))
+                for i in range(0,100):zaxis[i,Z]=zmin+(zmax-zmin)/NAXES*i
+        if plot.xyplane and ib>0:
+            xleft=np.zeros((NAXES,3))
+            for i in range(0,100):
+                xleft[i,Y]=min(ymin,0)
+                xleft[i,X]=xmin+(xmax-xmin)/NAXES*i
+            xright=np.zeros((NAXES,3))
+            for i in range(0,100):
+                xright[i,Y]=max(ymax,0)
+                xright[i,X]=xmin+(xmax-xmin)/NAXES*i
+            yleft=np.zeros((NAXES,3))
+            for i in range(0,100):
+                yleft[i,X]=min(xmin,0)
+                yleft[i,Y]=ymin+(ymax-ymin)/NAXES*i
+            yright=np.zeros((NAXES,3))
+            for i in range(0,100):
+                yright[i,X]=max(xmax,0)
+                yright[i,Y]=ymin+(ymax-ymin)/NAXES*i
+
+        #==============================
+        #PLOT AXES AND XY-PLANE
+        #==============================
+        if plot.axes and ib>0:
+            astyle=dict(color='black',linestyle='-')
+            Xv,Yv,Zv=rotate3D(xaxis,plot.view[PHI],plot.view[THETA])
+            plt.plot(Xv,Yv,**astyle)
+            ax.text(Xv[-1],Yv[-1],'x (%.1e)'%xmax)
+            Xv,Yv,Zv=rotate3D(yaxis,plot.view[PHI],plot.view[THETA])
+            plt.plot(Xv,Yv,**astyle)
+            ax.text(Xv[-1],Yv[-1],'y (%.1e)'%ymax)
+            Xv,Yv,Zv=rotate3D(zaxis,plot.view[PHI],plot.view[THETA])
+            plt.plot(Xv,Yv,**astyle)
+            ax.text(Xv[-1],Yv[-1],'z (%.1e)'%zmax)
+        if plot.xyplane and ib>0:
+            xystyle=dict(color='gray',linestyle='-')
+            Xv,Yv,Zv=rotate3D(xleft,plot.view[PHI],plot.view[THETA])
+            plt.plot(Xv,Yv,**xystyle)
+            Xv,Yv,Zv=rotate3D(xright,plot.view[PHI],plot.view[THETA])
+            plt.plot(Xv,Yv,**xystyle)
+            Xv,Yv,Zv=rotate3D(yleft,plot.view[PHI],plot.view[THETA])
+            plt.plot(Xv,Yv,**xystyle)
+            Xv,Yv,Zv=rotate3D(yright,plot.view[PHI],plot.view[THETA])
+            plt.plot(Xv,Yv,**xystyle)
+
+            #ASPECT RATIO
+            ax.set_aspect('equal')
+
+        #AXIS
+        if not plot.plotbox:
+            ax.set_axis_off()
+        else:
+            #GRID
+            if plot.grid:
+                print "\tIncluding grid...";
+                ax.grid()
+            #LABELS
+            ax.set_xlabel(plot.xlabel)
+            ax.set_ylabel(plot.ylabel)
+
+        #==============================
+        #SAVE IMAGE
+        #==============================
+        if ib is 0:
+            print "No bodies to plot"
+        else:
+            plt.savefig(OUTDIR+"/"+plot.image)
+
+    if plot.type is "evolution":
+        #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        #TIME EVOLUTION PLOT
+        #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        print "Time Evolution Plot"
+
+        #==============================
+        #PREPARE PLOT
+        #==============================
+        fig=plt.figure(figsize=(8,8))
+        nelems=len(plot.elements)
+        l=0.1
+        b=0.07
+        w=0.85
+        h=1.0/(1.15*nelems)
+        ax=[]
+
+        add=dict()
+        for i in range(0,nelems):
+            #--------------------
+            #POSITION
+            #--------------------
+            prop=[l,b,w,h]
+            if i>0:
+                add=dict(sharex=ax[0])
+
+            ax+=[fig.add_axes(prop,**add)]
+            #--------------------
+            #YLIM
+            #--------------------
+            if plot.ylims[i] is not 'Auto':
+                ax[i].set_ylim(plot.ylims[i])
+            #--------------------
+            #YTICKS
+            #--------------------
+            yticks=ax[i].get_yticks()
+            ax[i].set_yticks(yticks[0:-1])
+            if i==nelems-1:
+                ax[i].set_yticks(yticks[0:])
+            #--------------------
+            #Y LABEL
+            #--------------------
+            ax[i].set_ylabel(plot.elements[i],rotation='horizontal')
+            ax[i].yaxis.set_label_coords(1.03,0.5)
+            b+=h
+
+        #==============================
+        #PLOT DATA FOR EACH BODY
+        #==============================
+        ib=0
+        for bcode in plot.bodies:
+            try:bid=BID[bcode]
+            except:
+                print "Body '%s' does not exist"%bcode
+                continue
+
+            body=state.BODIES[bid]
+            if not body['Activate']:
+                print "Body %s is not active..."%bcode
+                continue
+            bname=body['Name']
+
+            #==============================
+            #READ DATA
+            #==============================
+            print "Getting data for %s (%s)..."%(bcode,bname)
+            if not os.path.lexists('%s/%s.%s'%(OUTDIR,bcode,plot.extension)):
+                print "FILE: '%s/%s.%s'"%(OUTDIR,bcode,plot.extension)
+                print "Body '%s' has no data '%s'"%(bcode,plot.extension)
+                continue
+
+            c=[]
+            for coord in plot.elements:
+                icoord=ELSINDEX[coord]
+                tc=np.loadtxt('%s/%s.%s'%(OUTDIR,bcode,plot.extension),
+                              usecols=(0,icoord))
+                cv=[]
+                tv=[]
+                i=0
+                for t,cr in tc:
+                    if i==0:
+                        tref=t
+                        i+=1
+                    if abs(t-tref)>=abs(plot.tini) and abs(t-tref)<=abs(plot.tend):
+                        cv+=[cr]
+                        tv+=[t]
+                c+=[np.array(cv)]
+
+            #==============================
+            #PLOT DATA
+            #==============================
+            pelem=[0]*nelems
+            for i in range(0,nelems):
+                element=plot.elements[i]
+                pelem=ax[i].plot(tv,c[i],label='%s'%bname)
+                try:
+                    style=plot.styles[ib]
+                except:
+                    style=plot.styles[0]
+
+                plt.setp(pelem,
+                         color=style[0],
+                         linestyle=style[1],
+                         linewidth=style[2],
+                         marker=style[3],
+                         markersize=style[4])
+
+            ib+=1
+
+        #--------------------
+        #XLIM & XTICKS
+        #--------------------
+        #ax[0].set_xlim((plot.tini,plot.tend))
+        #xticks=np.linspace(plot.tini,plot.tend,10)
+        #ax[0].set_xticks(xticks[1:-1])
+        #--------------------
+        #X LABEL
+        #--------------------
+        ax[0].set_xlabel('t (%s)'%state.TIME_UNIT)
+            
+        #==============================
+        #ADJUST PLOT
+        #==============================
+        for i in range(0,nelems):
+            #--------------------
+            #YSCALE
+            #--------------------
+            ax[i].set_yscale(plot.yscales[i])
+            #--------------------
+            #YLIM
+            #--------------------
+            if plot.ylims[i] is not 'Auto':
+                ax[i].set_ylim(plot.ylims[i])
+                yticks=ax[i].get_yticks()
+                ax[i].set_yticks(yticks[0:])
+            else:
+                ylim=ax[i].get_ylim()
+                yticks=[]
+                lyticks=[]
+                for ytick in np.linspace(ylim[0],ylim[-1],10):
+                    yticks+=[ytick]
+                    lyticks+=["%.1e"%ytick]
+                ax[i].set_yticks(yticks[:-1])
+                ax[i].set_yticklabels(lyticks[:-1])
+
+        #==============================
+        #DECORATION
+        #==============================
+        fl=fonts()
+        fl.set_size('small')
+        ax[nelems-1].legend(
+            bbox_to_anchor=(0.0,1.02,1.0,0.2),
+            loc=3,ncol=6,mode="expand",prop=fl)
+
+        #==============================
+        #SAVE IMAGE
+        #==============================
+        if ib is 0:
+            print "No bodies to plot"
+        else:
+            plt.savefig(OUTDIR+"/"+plot.image)
