@@ -57,8 +57,9 @@ Quick start
 
       make utilbuild
 
-3. Copy an example:
+3. Copy an example and prepare a run:
 
+      cp -rf examples/system.config
       make prepare
 
 4. 
