@@ -62,7 +62,11 @@ Quick start
       cp -rf examples/system.config
       make prepare
 
-4. 
+4. Launch the run:
+
+      make go
+
+To know more read the doc/MANUAL.txt.
 
 For the contirbutor
 ===================
