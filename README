@@ -59,7 +59,7 @@ Quick start
 
 3. Copy an example and prepare a run:
 
-      cp -rf examples/system.config
+      cp -rf examples/*.config .
       make prepare
 
 4. Launch the run:

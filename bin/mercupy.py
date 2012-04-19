@@ -33,14 +33,20 @@ OUTDIR="output"
 ################################################################################
 #DOES NOT CHANGE MANTISA (VALUES USED BY MERCURY6). ORBITAL UNITS
 PI=np.pi #Pi
+
 GCONST=6.67428E-20 #km/s^2 kg #USNO
-MSUN=1.9884E30 #kg
+MSUN=1.9884E30 #kg #USNO
+MEARTH=MSUN/332946.0487 #kg #USNO
+MMARS=MSUN/3.09870359E6 #kg #USNO
+MJUP=MSUN/1.047348644E3 #kg #USNO
+MSAT=MSUN/3.4979018E3 #kg #USNO
+MURANUS=MSUN/2.290298E4 #kg #USNO
+MNEPTUNE=MSUN/1.941226E4 #kg #USNO
+
 RSUN=6.96e5 #km
 REARTH=6.371E3 #km
-MEARTH=MSUN/332946.0487 #kg #USNO
 MMOON=7.3477E22 #kg
 RMOON=1737.1 #km
-MJUP=1.8986e27 #kg
 RJUP=71492 #km
 AU=1.49597870700e8 #km #USNO
 HOURS=3600 #secs
@@ -462,7 +468,7 @@ def ShowBody(body,fhl=sys.stdout):
     """
     Show body properties
     """
-    print>>fhl, "Object %d (Type,Obj.Class): Code %s, Name %s (%d,%d)"%(body["Id"],body["Code"],body["Name"],body["Type"],body["ObjectClass"])
+    print>>fhl, "Object %d (Type,Obj.Class): Code %s, Name %s (%d,%d)"%(body["Id"]+1,body["Code"],body["Name"],body["Type"],body["ObjectClass"])
     print>>fhl, "\tMass (UM = %e kg): %e UM, %e kg"%(UMMERC,body["Mass"],body["Mass"]*UMMERC)
     print>>fhl, "\tRadius (UL = %e km): %e UL, %e km"%(ULMERC,body["Radius"],body["Radius"]*ULMERC)
     print>>fhl, "\tDensity (URHO = %e g/cc): %e URHO, %e kg/m3"%(URHOMERC,body["Density"],body["Density"]*URHOMERC)
