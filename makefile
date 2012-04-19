@@ -20,7 +20,12 @@ utilbuild:
 updaterepo:
 	@echo "Commiting..."
 	@git commit -am "Commit"
+	@echo "Pushing..."
 	@git push origin master
+
+pull:
+	@echo "Pulling..."
+	@git pull
 
 #################################################################################
 #MERCUPY PIPELINE

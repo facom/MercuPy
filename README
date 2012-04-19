@@ -35,10 +35,10 @@ Chambers in 1999 and published in:
    Encounters between Massive Bodies". Monthly Notices of the Royal
    Astronomical Society, vol 304, pp793-799.
 
-It also redistribute the include files and binary libraries of the
+It also redistributes the header files and binary libraries of the
 SPICE Naif utilities distributed officially by NASA at:
 
-
+   http://naif.jpl.nasa.gov/naif/aboutspice.html
 
 #################################################################################
 
@@ -53,9 +53,15 @@ Quick start
 
    Then you will be able to get updates using 'git pull'.
 
-2. Compile it:
+2. Compile utilities:
 
-      make all
+      make utilbuild
+
+3. Copy an example:
+
+      make prepare
+
+4. 
 
 For the contirbutor
 ===================
