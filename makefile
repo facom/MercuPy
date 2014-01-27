@@ -38,6 +38,7 @@ build:
 	make all
 
 run:$(PROGRAMS)
+	@sleep 1
 	time ./mercury6_2.exe
 	$(shell \
 	if [ -e "output/phase" ];\
