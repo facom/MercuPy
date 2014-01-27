@@ -4,6 +4,7 @@
 ################################################################################
 FC=gfortran
 PROGRAMS=mercury6_2.exe element6.exe close6.exe
+FFLAGS=-w
 
 #################################################################################
 #BASIC RULS
@@ -11,7 +12,7 @@ PROGRAMS=mercury6_2.exe element6.exe close6.exe
 all:$(PROGRAMS)
 
 %.exe:%.for
-	$(FC) $^ -o $@ &>> errors.log
+	$(FC) $(FFLAGS) $^ -o $@ &>> errors.log
 
 utilbuild:
 	echo "Compiling util programs..."
