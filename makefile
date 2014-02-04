@@ -103,8 +103,12 @@ cleanplot:cleantmp
 
 cleantmp:
 	rm -rf *~ *.tmp *.dmp *.log tmp/*
+	find . -name "*~" -exec rm -rf {} \;
 
 #ADDED FOR THE RUN PIPELINE OF SCI2WEB
 cleansci2web:
 	rm -rf *.sig
 	rm -rf run.sh run.conf submit.sh
+
+commit:
+	git commit -am "Commit" && git push origin master

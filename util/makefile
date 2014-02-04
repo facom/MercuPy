@@ -18,6 +18,11 @@ ifeq ($(ARCH),generic)
 	CSPICE_LIBDIR=$(CSPICE_PREFIX)/lib64
 	EXT=e64
 endif
+
+ifdef CSPICE
+	CSPICE_LIBDIR=$(CSPICE)
+endif
+
 CSPICE_LIBS=$(CSPICE_LIBDIR)/cspice.a $(CSPICE_LIBDIR)/csupport.a
 LFLAGS=-lm $(CSPICE_LIBS) 
 
@@ -41,3 +46,6 @@ clean:
 
 showarch:
 	@echo $(ARCH)
+
+showdir:
+	@echo $(CSPICE_LIBDIR)
