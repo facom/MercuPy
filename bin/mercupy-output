@@ -75,7 +75,7 @@ for body in state.BODIES:
             fplain="%s/%s.dat"%(OUTDIR,bname)
             
             #CONVERT FILE TO PLAIN FORMAT
-            System("sed -e 's/\\*/0/gi' %s/%s | grep -v '^$' | grep -v '%s' | grep -v 'Time' > %s"%(OUTDIR,fname,bname,ftmp))
+            System("sed -e 's/\\*/0/g' %s/%s | grep -v '^$' | grep -v '%s' | grep -v 'Time' > %s"%(OUTDIR,fname,bname,ftmp))
             
             #READ DATA
             data=np.loadtxt(ftmp)
