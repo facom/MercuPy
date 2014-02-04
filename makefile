@@ -5,6 +5,10 @@
 FC=gfortran
 PROGRAMS=mercury6_2.exe element6.exe close6.exe
 FFLAGS=-w
+UTIL_PREFIX=
+ifdef CSPICE
+	UTIL_PREFIX=CSPICE=$(CSPICE)
+endif
 
 #################################################################################
 #BASIC RULS
@@ -12,11 +16,10 @@ FFLAGS=-w
 all:$(PROGRAMS)
 
 %.exe:%.for
-	$(FC) $(FFLAGS) $^ -o $@ &>> errors.log
+	$(FC) $(FFLAGS) $^ -o $@ &> errors.log
 
 utilbuild:
-	echo "Compiling util programs..."
-	make -s -C util all install
+	$(UTIL_PREFIX) make -s -C util all install
 
 updaterepo:
 	@echo "Commiting..."

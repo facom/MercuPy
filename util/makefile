@@ -9,6 +9,7 @@ CSPICE_PREFIX=cspice
 CPPFLAGS=$(CFLAGS_OPT) -I. -I$(CSPICE_PREFIX)/include
 CSPICE_LIBDIR=$(CSPICE_PREFIX)/lib
 UTILPROGS=elem2state.out state2elem.out
+EXT=out
 
 ifeq ($(ARCH),amd64)
 	CSPICE_LIBDIR=$(CSPICE_PREFIX)/lib64
@@ -41,6 +42,7 @@ install:
 clean:
 	@echo "Cleaning..."
 	rm -rf *.out *.e* *~
+	rm -rf *.
 	rm -rf $(UTILPROGS:.out=)
 	cd ../bin;rm -rf $(UTILPROGS:.out=)
 
